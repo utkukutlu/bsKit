@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BsKit</title>
+    <link rel="stylesheet" href="../src/bskit.min.css">
+</head>
+<body>
+
+
+<table border="1" class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>UserId</th>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Body</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<button class="bs-alert-btn">Bs Alert</button>
+<button class="bs-notification-btn" data-type="success">Success Bs Notification</button>
+<button class="bs-notification-btn" data-type="info">Info Bs Notification</button>
+<button class="bs-notification-btn" data-type="warning">Warning Bs Notification</button>
+<button class="bs-notification-btn" data-type="danger">Danger Bs Notification</button>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="../src/bskit.js"></script>
+
+
+<script>
+
+
+    $(function () {
+        var table = $("table").bsTable({
+            columns: [
+                {data: "userId"},
+                {data: "id"},
+                {data: "title"},
+                {data: "body",sortable:false},
+            ],
+            ajax: {
+                url: "https://jsonplaceholder.typicode.com/posts",
+                type: "GET",
+                data: {}
+            },
+            lengthMenu: [
+                [10, 20, 25, 50, -1],
+                [10, 20, 25, 50, "All"]
+            ],
+            dataLength: 10,
+            buttons: [
+                {
+                    text: "Get Rows",
+                    className: "btn btn-primary",
+                    action: function () {
+                        var rows = table.getRows();
+                        console.dir(rows);
+                        alert("look console");
+                    }
+                },
+                {
+                    text: "Get Selected Row",
+                    action: function () {
+                        var row = table.getSelectedRow();
+                        console.dir(row);
+                        alert("look console");
+                    }
+                },
+                {
+                    text: "Get First Row",
+                    action: function () {
+                        var row = table.getRow(0);
+                        console.dir(row);
+                        alert("look console");
+                    }
+                }
+            ]
+        });
+
+
+        $(".bs-notification-btn").click(function () {
+            $.bsNotification({
+                type: $(this).data("type"),
+                content: "Notification " + $(this).data("type"),
+                duration: 1000
+            }, function () {
+                alert("notification clicked");
+            });
+        });
+
+
+        $(".bs-alert-btn").click(function () {
+
+            var bsAlert = $.bsAlert({
+                type: "success",
+                title: "Title",
+                content: "Content",
+                closable: false,
+                buttons: [
+                    {
+                        text: "OK",
+                        value: "ok",
+                        background: "#2196F3",
+                        color: "#fff"
+                    },
+                    {
+                        text: "Close",
+                        value: "close",
+                        background: "#F44336",
+                        color: "#fff"
+                    }
+                ]
+            }, function (val) {
+                if (val === "ok") {
+                    bsAlert.disableClose = true;
+                    bsAlert.updateTitle("OK Clicked");
+                    bsAlert.updateContent("Closed After 1s");
+                    setTimeout(function () {
+                        bsAlert.close();
+                    }, 1000);
+                } else if (val === "close") {
+                    console.log("close clicked");
+                }
+
+            });
+
+        });
+
+
+    });
+
+</script>
+
+</body>
+</html>
