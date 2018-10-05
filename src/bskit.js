@@ -621,3 +621,274 @@ $.bsNotification = function (params, callback) {
 
     return this;
 };
+
+$.bsWindow = function (params) {
+    this.id = "bs-window";
+    this.class = "bs-window";
+    this.title = "bs Window";
+
+    this.width = "500px";
+    this.height = "500px";
+    this.background = "#dfe8f6";
+    this.visible = true;
+    this.content = "";
+    this.resizable = true;
+    this.draggable = true;
+    this.xPosition = "center";
+    this.yPosition = "center";
+    this.src = "";
+    this.closeButtonContent = "X";
+
+    this.isFullScreen = false;
+
+    var parent = this;
+
+    this.show = function () {
+        parent.visible = true;
+        parent.bsContainer.show();
+    };
+    this.hide = function () {
+        parent.visible = false;
+        parent.bsContainer.hide();
+    };
+    if (typeof params !== "undefined") {
+
+        if (typeof params.resizable !== "undefined") {
+            this.resizable = params.resizable;
+        }
+
+        if (typeof params.width !== "undefined") {
+            this.width = params.width;
+        }
+
+        if (typeof params.height !== "undefined") {
+            this.height = params.height;
+        }
+
+        if (typeof params.show !== "undefined") {
+            this.visible = params.show;
+        }
+
+        if (typeof params.background !== "undefined") {
+            this.background = params.background;
+        }
+
+        if (typeof params.title !== "undefined") {
+            this.title = params.title;
+        }
+
+        if (typeof params.content !== "undefined") {
+            this.content = params.content;
+        }
+        if (typeof params.draggable !== "undefined") {
+            this.draggable = params.draggable;
+        }
+        if (typeof params.xPosition !== "undefined") {
+            this.xPosition = params.xPosition;
+        }
+        if (typeof params.yPosition !== "undefined") {
+            this.yPosition = params.yPosition;
+        }
+        if (typeof params.src !== "undefined") {
+            this.src = params.src;
+        }
+        if (typeof params.closeButtonContent !== "undefined") {
+            this.closeButtonContent = params.closeButtonContent;
+        }
+
+    }
+
+
+    this.bsContainer = $('<div/>', {
+        id: this.id,
+        class: "bs-window-container",
+        style: "border:1px solid #99bbe8;position: absolute;" + "width:" + this.width + ";" + "height:" + this.height + ";" + "background:" + this.background + ";z-index:999;"
+    });
+
+
+    this.bsWindowDiv = $('<div/>', {
+        class: "bs-window",
+        style: "position: relative;left: 0;right: 0;top: 0;bottom: 0;width: 100%;height: 100%;background: gray;"
+    });
+
+    this.bsHeader = $('<div/>', {
+        class: "bs-window-header",
+        style: "border-bottom:1px solid #99bbe8;height: 30px;color: #000;line-height: 30px;padding: 0 4px;background: rgb(206,221,239);background: -moz-linear-gradient(top, rgba(206,221,239,1) 0%, rgba(218,230,244,1) 100%);background: -webkit-linear-gradient(top, rgba(206,221,239,1) 0%,rgba(218,230,244,1) 100%);background: linear-gradient(to bottom, rgba(206,221,239,1) 0%,rgba(218,230,244,1) 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ceddef', endColorstr='#dae6f4',GradientType=0 );"
+    });
+
+    this.bsTitle = $('<div/>', {
+        class: "bs-window-title",
+        style: "cursor:default;user-select:none;-moz-user-select:none;-webkit-user-select:none;",
+        html: this.title
+    });
+
+    this.bsBody = $('<div/>', {
+        class: "bs-window-body",
+        style: "background: #fff;width: 100%;height:calc(100% - 60px);position:relative",
+        html: this.content
+    });
+
+    this.bsFooter = $('<div/>', {
+        class: "bs-window-footer",
+        style: "border-top:1px solid #99bbe8;padding: 0 4px;height: 30px;background: rgb(218,230,244);background: -moz-linear-gradient(top, rgba(218,230,244,1) 0%, rgba(206,221,239,1) 100%);background: -webkit-linear-gradient(top, rgba(218,230,244,1) 0%,rgba(206,221,239,1) 100%);background: linear-gradient(to bottom, rgba(218,230,244,1) 0%,rgba(206,221,239,1) 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dae6f4', endColorstr='#ceddef',GradientType=0 );"
+    });
+
+    this.closeButton = $('<div/>', {
+        class: "bs-window-close-btn",
+        style: "width: 25px;height: 25px;position: absolute;right: 10px;cursor: pointer;text-align: center;line-height: 25px;margin-top: 1px;",
+        html: this.closeButtonContent
+    });
+
+    this.iframe = $('<iframe/>', {
+        style: "width:100%;height:100%;position:absolute;left:0;right:0;top:0;bottom:0;",
+        src: this.src
+    });
+
+
+    this.bsContainer.append(this.bsWindowDiv);
+
+    this.bsContainer.append(this.bsWindowDiv);
+
+    this.bsWindowDiv.append(this.bsHeader);
+
+    this.bsHeader.append(this.closeButton);
+
+
+    this.bsHeader.append(this.bsTitle);
+
+
+    this.bsWindowDiv.append(this.bsBody);
+
+
+    this.bsWindowDiv.append(this.bsFooter);
+
+    // this.html(this.bsContainer);
+
+    this.bsBody.append(this.iframe);
+
+
+    if (this.draggable === true) {
+
+
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        var element = this.bsContainer;
+        this.bsHeader.on("mousedown", function (e) {
+            e = e || window.event;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            $(document).on("mouseup", function () {
+                element.css("opacity", "1");
+                $(document).off("mouseup");
+                $(document).off("mousemove");
+            });
+            $(document).on("mousemove", function (e) {
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.css("top", (element.offset().top - pos2));
+                element.css("left", (element.offset().left - pos1));
+                element.css("opacity", "0.5");
+            });
+        });
+
+        this.bsFooter.on("mousedown", function (e) {
+            e = e || window.event;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            $(document).on("mouseup", function () {
+                element.css("opacity", "1");
+                $(document).off("mouseup");
+                $(document).off("mousemove");
+            });
+            $(document).on("mousemove", function (e) {
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.css("top", (element.offset().top - pos2));
+                element.css("left", (element.offset().left - pos1));
+                element.css("opacity", "0.5");
+            });
+        });
+    }
+
+    this.bsHeader.dblclick(function () {
+        if (parent.isFullScreen === true) {
+            console.log("restore");
+            parent.restore();
+        } else {
+            console.log("maximize");
+            parent.maximize();
+        }
+    });
+
+    this.closeButton.click(function () {
+
+        parent.bsContainer.remove();
+
+    });
+
+
+    this.maximize = function () {
+        parent.isFullScreen = true;
+        parent.bsContainer.css({
+            "left": "0",
+            "right": "0",
+            "top": "0",
+            "bottom": "0",
+            "width": "100%",
+            "height": "100%",
+        });
+
+    };
+
+    this.restore = function () {
+        parent.isFullScreen = false;
+        parent.bsContainer.width(parent.width);
+        parent.bsContainer.height(parent.height);
+        parent.bsContainer.css({
+            "top": Math.max(0, ($(window).height() - this.bsContainer.outerHeight()) / 2),
+            "left": Math.max(0, ($(window).width() - this.bsContainer.outerHeight()) / 2)
+        });
+    };
+
+    this.close = function () {
+        this.bsContainer.remove();
+    };
+
+    if (this.show === false) {
+        $(parent.bsContainer).hide();
+    }
+    if (this.xPosition === "left") {
+        this.bsContainer.css({
+            "left": "0"
+        });
+    } else if (this.xPosition === "center") {
+        this.bsContainer.css({
+            "left": Math.max(0, ($(window).width() - this.bsContainer.outerHeight()) / 2)
+        });
+    } else if (this.xPosition === "right") {
+        this.bsContainer.css({
+            "right": "0",
+        });
+    }
+
+    if (this.yPosition === "top") {
+        this.bsContainer.css({
+            "top": "0"
+        });
+    } else if (this.yPosition === "center") {
+        this.bsContainer.css({
+            "top": Math.max(0, ($(window).height() - this.bsContainer.outerHeight()) / 2)
+
+        });
+    } else if (this.yPosition === "bottom") {
+        this.bsContainer.css({
+            "bottom": "0"
+        });
+    }
+
+    $("body").append(this.bsContainer);
+    return this;
+};
