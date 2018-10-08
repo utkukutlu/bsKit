@@ -702,45 +702,39 @@ $.bsWindow = function (params) {
     this.bsContainer = $('<div/>', {
         id: this.id,
         class: "bs-window-container",
-        style: "border:1px solid #99bbe8;position: absolute;" + "width:" + this.width + ";" + "height:" + this.height + ";" + "background:" + this.background + ";z-index:999;"
+        style: "width:" + this.width + ";" + "height:" + this.height + ";" + "background:" + this.background + ";"
     });
 
 
     this.bsWindowDiv = $('<div/>', {
-        class: "bs-window",
-        style: "position: relative;left: 0;right: 0;top: 0;bottom: 0;width: 100%;height: 100%;background: gray;"
+        class: "bs-window"
     });
 
     this.bsHeader = $('<div/>', {
-        class: "bs-window-header",
-        style: "border-bottom:1px solid #99bbe8;height: 30px;color: #000;line-height: 30px;padding: 0 4px;background: rgb(206,221,239);background: -moz-linear-gradient(top, rgba(206,221,239,1) 0%, rgba(218,230,244,1) 100%);background: -webkit-linear-gradient(top, rgba(206,221,239,1) 0%,rgba(218,230,244,1) 100%);background: linear-gradient(to bottom, rgba(206,221,239,1) 0%,rgba(218,230,244,1) 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ceddef', endColorstr='#dae6f4',GradientType=0 );"
+        class: "bs-window-header"
     });
 
     this.bsTitle = $('<div/>', {
         class: "bs-window-title",
-        style: "cursor:default;user-select:none;-moz-user-select:none;-webkit-user-select:none;",
         html: this.title
     });
 
     this.bsBody = $('<div/>', {
         class: "bs-window-body",
-        style: "background: #fff;width: 100%;height:calc(100% - 60px);position:relative",
         html: this.content
     });
 
     this.bsFooter = $('<div/>', {
         class: "bs-window-footer",
-        style: "border-top:1px solid #99bbe8;padding: 0 4px;height: 30px;background: rgb(218,230,244);background: -moz-linear-gradient(top, rgba(218,230,244,1) 0%, rgba(206,221,239,1) 100%);background: -webkit-linear-gradient(top, rgba(218,230,244,1) 0%,rgba(206,221,239,1) 100%);background: linear-gradient(to bottom, rgba(218,230,244,1) 0%,rgba(206,221,239,1) 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dae6f4', endColorstr='#ceddef',GradientType=0 );"
     });
 
     this.closeButton = $('<div/>', {
         class: "bs-window-close-btn",
-        style: "width: 25px;height: 25px;position: absolute;right: 10px;cursor: pointer;text-align: center;line-height: 25px;margin-top: 1px;",
         html: this.closeButtonContent
     });
 
     this.iframe = $('<iframe/>', {
-        style: "width:100%;height:100%;position:absolute;left:0;right:0;top:0;bottom:0;",
+        class: "bs-window-iframe",
         src: this.src
     });
 
@@ -815,10 +809,8 @@ $.bsWindow = function (params) {
 
     this.bsHeader.dblclick(function () {
         if (parent.isFullScreen === true) {
-            console.log("restore");
             parent.restore();
         } else {
-            console.log("maximize");
             parent.maximize();
         }
     });
@@ -837,8 +829,8 @@ $.bsWindow = function (params) {
             "right": "0",
             "top": "0",
             "bottom": "0",
-            "width": "100%",
-            "height": "100%",
+            "width": "calc(100% - 5px)",
+            "height": "calc(100% - 5px)",
         });
 
     };
@@ -891,4 +883,30 @@ $.bsWindow = function (params) {
 
     $("body").append(this.bsContainer);
     return this;
+};
+
+
+$.fn.bsValidate = function () {
+    let form = this;
+    let r = true;
+    form.find(":input").each(function () {
+        if ($(this).attr("type") === "text") {
+            if (($(this).val() === null || $(this).val() === "") && ($(this).attr("required") !== undefined || $(this).attr("required") !== false)) {
+                r = false;
+            }
+        } else if ($(this).attr("type") === "radio") {
+            if (form.find("input[type='radio'][name='" + $(this).attr("name") + "']:checked").length === 0) {
+                r = false;
+            }
+        } else if ($(this).attr("type") === "checkbox") {
+            if (form.find("input[type='checkbox'][name='" + $(this).attr("name") + "']:checked").length === 0) {
+                r = false;
+            }
+            console.dir($(this).attr("name") + " - " + $(this).is(":checked"));
+        }
+
+    });
+
+    return r;
+
 };

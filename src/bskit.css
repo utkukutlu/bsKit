@@ -238,3 +238,80 @@
 .bs-notification-danger {
     background: #d9534f !important;
 }
+
+.bs-window-container {
+    border: 1px solid #99bbe8;
+    position: absolute;
+    z-index: 999;
+}
+
+.bs-window {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: gray;
+}
+
+.bs-window-header {
+    border-bottom: 1px solid #99bbe8;
+    height: 30px;
+    color: #000;
+    line-height: 30px;
+    padding: 0 4px;
+    background: rgb(206, 221, 239);
+    background: -moz-linear-gradient(top, rgba(206, 221, 239, 1) 0%, rgba(218, 230, 244, 1) 100%);
+    background: -webkit-linear-gradient(top, rgba(206, 221, 239, 1) 0%, rgba(218, 230, 244, 1) 100%);
+    background: linear-gradient(to bottom, rgba(206, 221, 239, 1) 0%, rgba(218, 230, 244, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ceddef', endColorstr='#dae6f4', GradientType=0);
+}
+
+.bs-window-title {
+    cursor: default;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+
+}
+
+.bs-window-body {
+    background: #fff;
+    width: 100%;
+    height: calc(100% - 60px);
+    position: relative
+}
+
+.bs-window-footer {
+    border-top: 1px solid #99bbe8;
+    padding: 0 4px;
+    height: 30px;
+    background: rgb(218, 230, 244);
+    background: -moz-linear-gradient(top, rgba(218, 230, 244, 1) 0%, rgba(206, 221, 239, 1) 100%);
+    background: -webkit-linear-gradient(top, rgba(218, 230, 244, 1) 0%, rgba(206, 221, 239, 1) 100%);
+    background: linear-gradient(to bottom, rgba(218, 230, 244, 1) 0%, rgba(206, 221, 239, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dae6f4', endColorstr='#ceddef', GradientType=0);
+}
+
+.bs-window-close-btn {
+    min-width: 25px;
+    height: 25px;
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 25px;
+    margin-top: 1px;
+}
+
+.bs-window-iframe {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}

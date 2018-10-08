@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>BsKit</title>
-    <link rel="stylesheet" href="../src/bskit.min.css">
+    <link rel="stylesheet" href="../src/bskit.css">
 </head>
 <body>
 
@@ -20,12 +20,33 @@
     <tbody></tbody>
 </table>
 
+<hr>
+
 <button class="bs-alert-btn">Bs Alert</button>
 <button class="bs-notification-btn" data-type="success">Success Bs Notification</button>
 <button class="bs-notification-btn" data-type="info">Info Bs Notification</button>
 <button class="bs-notification-btn" data-type="warning">Warning Bs Notification</button>
 <button class="bs-notification-btn" data-type="danger">Danger Bs Notification</button>
+<hr>
+<button class="bs-window-btn" data-type="danger">Bs Window</button>
+<hr>
 
+<form method="post">
+    <label><input type="text" name="text" required placeholder="Text">Text</label><br><br>
+    <label><input type="checkbox" name="checkbox" required>Checkbox</label><br><br>
+    <label><input type="radio" name="radio" value="0" required>Radio 0</label>
+    <label><input type="radio" name="radio" value="0" required>Radio 1</label>
+    <label><input type="radio" name="radio" value="0" required>Radio 2</label><br><br>
+    <select name="select" required>
+        <option value="-1" selected disabled>Select One</option>
+        <option value="0">Select 0</option>
+        <option value="1">Select 1</option>
+        <option value="2">Select 2</option>
+        <option value="3">Select 3</option>
+    </select>
+    <br><br>
+    <button name="validate" type="button">Validate</button>
+</form>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="../src/bskit.js"></script>
@@ -40,7 +61,7 @@
                 {data: "userId"},
                 {data: "id"},
                 {data: "title"},
-                {data: "body",sortable:false},
+                {data: "body", sortable: false},
             ],
             ajax: {
                 url: "https://jsonplaceholder.typicode.com/posts",
@@ -128,6 +149,26 @@
 
             });
 
+        });
+
+        $(".bs-window-btn").click(function () {
+            $.bsWindow({
+                title: "Bs Window Title",
+                show: true,
+                resizable: false,
+                draggable: true,
+                closeButtonContent:"Close",
+                content: "",
+                xPosition: "center",
+                yPosition: "center",
+                width: "800px",
+                height: "800px",
+                src: "http://www.utkukutlu.com/"
+            });
+        });
+
+        $("button[name='validate']").click(function () {
+            alert($("form").bsValidate() === false ? "Not Validate" : "Validate");
         });
 
 
