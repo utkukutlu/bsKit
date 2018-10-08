@@ -76,7 +76,7 @@ $.fn.bsTable = function (params) {
     this.searchBox = $('<input/>', {
         type: "text",
         class: "bs-table-searchbox",
-        placeholder: "Arama"
+        placeholder: "Search"
     });
     this.lengthSelect = $('<select/>', {
         class: "bs-table-length-select",
@@ -909,4 +909,197 @@ $.fn.bsValidate = function () {
 
     return r;
 
+};
+
+
+$.fn.bsDatePicker = function (params) {
+
+
+    this.format = "d-m-y";
+
+    var parent = this;
+
+
+    if (typeof params !== "undefined") {
+        if (typeof params.format !== "undefined") {
+            parent.format = params.format;
+        }
+    }
+
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    var currentDate = new Date();
+
+    var currentDay = currentDate.getDate();
+    var currentMonth = currentDate.getMonth() + 1;
+    var currentYear = currentDate.getFullYear();
+    var currentDayOfWeek = currentDate.getDay();
+
+    this.container = $('<div/>', {
+        class: "bs-datepicker-container"
+    });
+
+    this.body = $('<div/>', {
+        class: "bs-datepicker-body"
+    });
+
+    this.top = $('<div/>', {
+        class: "bs-datepicker-top"
+    });
+
+    this.middle = $('<div/>', {
+        class: "bs-datepicker-middle"
+    });
+
+    this.bottom = $('<div/>', {
+        class: "bs-datepicker-bottom"
+    });
+
+    this.topLeftArrow = $('<div/>', {
+        class: "bs-datepicker-top-leftArrow",
+        html: "<"
+    });
+    this.topRightArrow = $('<div/>', {
+        class: "bs-datepicker-top-rightArrow",
+        html: ">"
+    });
+
+    this.topCenter = $('<div/>', {
+        class: "bs-datepicker-top-center",
+        html: getMonth(currentMonth - 1) + " " + currentYear,
+        month: currentMonth,
+        year: currentYear
+    });
+
+    parent.topLeftArrow.click(function () {
+        var el = parent.next(".bs-datepicker-container").find(".bs-datepicker-top-center");
+        var newMonth = parseInt(el.attr("month")) - 1;
+        if (newMonth < 1) {
+            newMonth = 12;
+            el.attr("year", parseInt(el.attr("year")) - 1);
+        }
+        el.attr("month", newMonth);
+        el.html(getMonth(el.attr("month") - 1) + " " + el.attr("year"));
+    });
+
+    parent.topRightArrow.click(function () {
+        var el = parent.next(".bs-datepicker-container").find(".bs-datepicker-top-center");
+        var newMonth = parseInt(el.attr("month")) + 1;
+        if (newMonth > 12) {
+            newMonth = 1;
+            el.attr("year", parseInt(el.attr("year")) + 1);
+        }
+        el.attr("month", newMonth);
+
+        changeDate();
+        el.html(getMonth(el.attr("month") - 1) + " " + el.attr("year"));
+    });
+
+
+    this.table = $('<table/>', {
+        class: "bs-datepicker-middle-table",
+    });
+    this.thead = $('<thead/>', {});
+    this.tbody = $('<tbody/>', {});
+
+
+    parent.table.append(parent.thead);
+    parent.table.append(parent.tbody);
+
+    parent.top.append(parent.topLeftArrow);
+    parent.top.append(parent.topCenter);
+    parent.top.append(parent.topRightArrow);
+
+
+    parent.middle.append(parent.table);
+
+    parent.body.append(parent.top);
+    parent.body.append(parent.middle);
+    parent.body.append(parent.bottom);
+
+    parent.container.append(parent.body);
+
+    parent.focus(function () {
+        if (getContainer().length === 0) {
+            parent.after(parent.container);
+            changeDate();
+        }
+    });
+
+    parent.blur(function () {
+        if (getContainer().length > 0 && !getContainer().is(":active")) {
+            parent.close();
+        }
+    });
+
+
+    function changeDate() {
+        getContainer().find("table tbody").html("");
+
+
+        for (var i = 1; i <= 31; i++) {
+            if (i % 7 == 0 || i === 1) {
+                var tr = $('<tr/>', {});
+            }
+            var day = i;
+            var month = getContainer().find(".bs-datepicker-top-center").attr("month");
+            var year = getContainer().find(".bs-datepicker-top-center").attr("year");
+            var date = new Date(year + "-" + month + "-" + day);
+
+            var td = $('<td/>', {
+                class: "bs-datepicker-middle-table-td " + (i === currentDay ? "bs-datepicker-current-day" : ""),
+                html: i + "<br>" + getDay(date.getDay()),
+                day: date.getDate(),
+                month: month,
+                year: year,
+                dayOfWeek: getDay(date.getDay())
+            });
+
+            td.click(function () {
+                parent.tbody.find(".bs-datepicker-middle-table-td").removeClass("bs-datepicker-current-day");
+                $(this).addClass("bs-datepicker-current-day");
+                var dateStr = (parent.format.replace("d", $(this).attr("day")).replace("m", $(this).attr("month")).replace("y", $(this).attr("year")));
+                parent.val(dateStr);
+                setTimeout(function () {
+                    parent.close();
+                }, 50);
+            });
+            tr.append(td);
+            getContainer().find("table tbody").append(tr);
+
+        }
+
+    }
+
+
+    function getMonth(index) {
+        if (index < 0) {
+            index = 0;
+        }
+        if (index > 12) {
+            index = 12;
+        }
+        return months[index];
+    }
+
+    function getDay(index) {
+        if (index < 0) {
+            index = 0;
+        }
+        if (index > 7) {
+            index = 7;
+        }
+        return days[index];
+    }
+
+    this.close = function () {
+        getContainer().remove();
+    }
+
+    function getContainer() {
+        return parent.next(".bs-datepicker-container");
+    }
+
+    return this;
 };

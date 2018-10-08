@@ -32,7 +32,7 @@
 <hr>
 
 <form method="post">
-    <label><input type="text" name="text" required placeholder="Text">Text</label><br><br>
+    <label><input type="text" name="text" required placeholder="Text">Date Picker</label><br><br>
     <label><input type="checkbox" name="checkbox" required>Checkbox</label><br><br>
     <label><input type="radio" name="radio" value="0" required>Radio 0</label>
     <label><input type="radio" name="radio" value="0" required>Radio 1</label>
@@ -157,7 +157,7 @@
                 show: true,
                 resizable: false,
                 draggable: true,
-                closeButtonContent:"Close",
+                closeButtonContent: "Close",
                 content: "",
                 xPosition: "center",
                 yPosition: "center",
@@ -169,6 +169,10 @@
 
         $("button[name='validate']").click(function () {
             alert($("form").bsValidate() === false ? "Not Validate" : "Validate");
+        });
+
+        $("input[name='text']").bsDatePicker({
+            format: "d-m-y"
         });
 
 
