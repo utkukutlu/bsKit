@@ -902,7 +902,6 @@ $.fn.bsValidate = function () {
             if (form.find("input[type='checkbox'][name='" + $(this).attr("name") + "']:checked").length === 0) {
                 r = false;
             }
-            console.dir($(this).attr("name") + " - " + $(this).is(":checked"));
         }
 
     });
@@ -960,6 +959,7 @@ $.fn.bsDatePicker = function (params) {
         class: "bs-datepicker-top-leftArrow",
         html: "<"
     });
+
     this.topRightArrow = $('<div/>', {
         class: "bs-datepicker-top-rightArrow",
         html: ">"
@@ -980,6 +980,7 @@ $.fn.bsDatePicker = function (params) {
             el.attr("year", parseInt(el.attr("year")) - 1);
         }
         el.attr("month", newMonth);
+        changeDate();
         el.html(getMonth(el.attr("month") - 1) + " " + el.attr("year"));
     });
 
@@ -991,7 +992,6 @@ $.fn.bsDatePicker = function (params) {
             el.attr("year", parseInt(el.attr("year")) + 1);
         }
         el.attr("month", newMonth);
-
         changeDate();
         el.html(getMonth(el.attr("month") - 1) + " " + el.attr("year"));
     });
@@ -1020,8 +1020,18 @@ $.fn.bsDatePicker = function (params) {
 
     parent.container.append(parent.body);
 
+    parent.click(function () {
+        if (getContainer().length === 0) {
+            parent.bsDatePicker(params);
+            parent.after(parent.container);
+            changeDate();
+        }
+    });
+
+
     parent.focus(function () {
         if (getContainer().length === 0) {
+            parent.bsDatePicker(params);
             parent.after(parent.container);
             changeDate();
         }
@@ -1095,7 +1105,7 @@ $.fn.bsDatePicker = function (params) {
 
     this.close = function () {
         getContainer().remove();
-    }
+    };
 
     function getContainer() {
         return parent.next(".bs-datepicker-container");
