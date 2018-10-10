@@ -325,6 +325,7 @@
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 2px;
+    display: none;
 }
 
 .bs-datepicker-container:after, .bs-datepicker-container:before {
@@ -404,11 +405,11 @@
     border-radius: 2px;
 }
 
-.bs-datepicker-current-day {
+.bs-datepicker-selected-day {
     background-color: #5446ff;
     color: #fff;
 }
 
-.bs-datepicker-middle-table-td:not(.bs-datepicker-current-day):hover {
+.bs-datepicker-middle-table-td:not(.bs-datepicker-selected-day):hover {
     background-color: #efefef;
 }

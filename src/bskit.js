@@ -22,7 +22,7 @@ $.fn.bsTable = function (params) {
     this.sortType = 1;
     this.buttons = "";
 
-    var parent = this;
+    var _this = this;
 
 
     if (typeof params !== "undefined") {
@@ -67,9 +67,9 @@ $.fn.bsTable = function (params) {
     this.table = this.container.find("table");
 
     if (this.table.find("tbody").length <= 0) {
-        parent.table.append(parent.tbody);
+        _this.table.append(_this.tbody);
     } else {
-        parent.tbody = parent.table.find("tbody");
+        _this.tbody = _this.table.find("tbody");
     }
 
 
@@ -83,7 +83,7 @@ $.fn.bsTable = function (params) {
     });
     if (this.lengthMenu !== "") {
         for (var i = 0; i < this.lengthMenu[0].length; i++) {
-            var isSelected = this.lengthMenu[0][i] == parent.dataLength ? true : false;
+            var isSelected = this.lengthMenu[0][i] == _this.dataLength ? true : false;
             var option = $('<option/>', {
                 html: this.lengthMenu[1][i],
                 value: this.lengthMenu[0][i],
@@ -94,27 +94,27 @@ $.fn.bsTable = function (params) {
     }
 
     this.lengthSelect.change(function (e) {
-        parent.dataLength = parent.lengthSelect.val();
-        for (var i = 0; i < parent.tbody.find("tr").length; i++) {
-            if (i >= parent.lengthSelect.val()) {
-                parent.tbody.find("tr").eq(i).hide();
+        _this.dataLength = _this.lengthSelect.val();
+        for (var i = 0; i < _this.tbody.find("tr").length; i++) {
+            if (i >= _this.lengthSelect.val()) {
+                _this.tbody.find("tr").eq(i).hide();
             } else {
-                parent.tbody.find("tr").eq(i).show();
+                _this.tbody.find("tr").eq(i).show();
             }
-            if (parent.lengthSelect.val() == -1) {
-                parent.tbody.find("tr").eq(i).show();
+            if (_this.lengthSelect.val() == -1) {
+                _this.tbody.find("tr").eq(i).show();
             }
         }
         rePage();
     });
 
     function rePage() {
-        var pageLength = Math.round(parent.totalData / parent.dataLength);
+        var pageLength = Math.round(_this.totalData / _this.dataLength);
         var pagination = $('<ul/>', {
             class: "bs-table-pagination"
         });
 
-        parent.container.find(".bs-table-pagination").remove();
+        _this.container.find(".bs-table-pagination").remove();
 
         for (var i = 1; i <= pageLength; i++) {
             var pagesLi = $('<li/>', {
@@ -127,16 +127,16 @@ $.fn.bsTable = function (params) {
                 page: i
             });
             pagesA.click(function () {
-                parent.container.find(".bs-table-pagination-a").removeClass("bs-table-pagination-a-active");
-                parent.container.find(".bs-table-pagination-a-active").removeClass("bs-table-pagination-a-active");
+                _this.container.find(".bs-table-pagination-a").removeClass("bs-table-pagination-a-active");
+                _this.container.find(".bs-table-pagination-a-active").removeClass("bs-table-pagination-a-active");
                 $(this).addClass("bs-table-pagination-a-active");
 
                 var page = $(this).attr("page");
-                for (var i = 0; i < parent.totalData; i++) {
-                    if (i >= (page * parent.dataLength - parent.dataLength) && i < page * parent.dataLength) {
-                        parent.container.find("tbody tr").eq(i).show();
+                for (var i = 0; i < _this.totalData; i++) {
+                    if (i >= (page * _this.dataLength - _this.dataLength) && i < page * _this.dataLength) {
+                        _this.container.find("tbody tr").eq(i).show();
                     } else {
-                        parent.container.find("tbody tr").eq(i).hide();
+                        _this.container.find("tbody tr").eq(i).hide();
                     }
                 }
             });
@@ -144,18 +144,18 @@ $.fn.bsTable = function (params) {
             pagination.append(pagesLi);
 
         }
-        parent.container.find(".bs-clear-pagination").remove();
-        parent.container.append(pagination);
-        parent.container.append("<div class='bs-clear bs-clear-pagination'></div>");
+        _this.container.find(".bs-clear-pagination").remove();
+        _this.container.append(pagination);
+        _this.container.append("<div class='bs-clear bs-clear-pagination'></div>");
 
     }
 
     this.searchBox.keyup(function () {
-        var val = parent.searchBox.val();
+        var val = _this.searchBox.val();
         if (val.trim() !== "") {
-            parent.container.find("tbody tr").filter(function () {
+            _this.container.find("tbody tr").filter(function () {
                 if ($(this).html().toLowerCase().indexOf(val) > -1) {
-                    if (parent.container.find("tbody tr:visible").length < parent.dataLength) {
+                    if (_this.container.find("tbody tr:visible").length < _this.dataLength) {
                         $(this).show();
                     }
                 } else {
@@ -164,34 +164,34 @@ $.fn.bsTable = function (params) {
 
             });
         } else {
-            parent.container.find("tbody tr").hide();
-            for (var i = 0; i <= parent.dataLength; i++) {
-                parent.container.find("tbody tr:nth-child(" + i + ")").show();
+            _this.container.find("tbody tr").hide();
+            for (var i = 0; i <= _this.dataLength; i++) {
+                _this.container.find("tbody tr:nth-child(" + i + ")").show();
             }
         }
-        if (!parent.container.find("tbody tr").is(":visible")) {
-            if (parent.container.find("tbody div").length <= 0) {
-                parent.tbody.append("<div>Veri Bulunamadı</div>");
+        if (!_this.container.find("tbody tr").is(":visible")) {
+            if (_this.container.find("tbody div").length <= 0) {
+                _this.tbody.append("<div>Veri Bulunamadı</div>");
             }
         } else {
-            parent.tbody.find("div").remove();
+            _this.tbody.find("div").remove();
         }
     });
 
 
-    parent.container.prepend(this.searchBox);
-    parent.searchBox.after("<div class='bs-clear'></div>");
+    _this.container.prepend(this.searchBox);
+    _this.searchBox.after("<div class='bs-clear'></div>");
 
-    parent.container.append(this.lengthSelect);
-    parent.lengthSelect.before("<div class='bs-clear'></div>");
+    _this.container.append(this.lengthSelect);
+    _this.lengthSelect.before("<div class='bs-clear'></div>");
 
 
-    if (parent.container.find("tbody").length <= 0) {
-        parent.table.append(this.tbody);
+    if (_this.container.find("tbody").length <= 0) {
+        _this.table.append(this.tbody);
     }
 
 
-    parent.container.on("click", "tbody td", function () {
+    _this.container.on("click", "tbody td", function () {
         var tr;
         if ($(this)[0] == 'tr' && false) {
             tr = $(this);
@@ -200,40 +200,40 @@ $.fn.bsTable = function (params) {
         }
         if (tr.hasClass("selected")) {
             tr.removeClass("selected");
-            parent.container.find("tbody tr").removeClass("selected");
+            _this.container.find("tbody tr").removeClass("selected");
         } else {
-            parent.container.find("tbody tr").removeClass("selected");
+            _this.container.find("tbody tr").removeClass("selected");
             tr.addClass("selected");
         }
 
     });
 
-    parent.container.find("thead tr th").click(function () {
+    _this.container.find("thead tr th").click(function () {
 
-        if (typeof parent.columns[this.cellIndex].sortable === "undefined" || parent.columns[this.cellIndex].sortable !== false) {
-            parent.sortType = parent.sortType * -1;
-            parent.container.find(".bs-table-sor-type").remove();
-            $(this).append("<div class='bs-table-sor-type'>" + (parent.sortType === 1 ? "&#9652;" : "&#9662;") + "</div>");
+        if (typeof _this.columns[this.cellIndex].sortable === "undefined" || _this.columns[this.cellIndex].sortable !== false) {
+            _this.sortType = _this.sortType * -1;
+            _this.container.find(".bs-table-sor-type").remove();
+            $(this).append("<div class='bs-table-sor-type'>" + (_this.sortType === 1 ? "&#9652;" : "&#9662;") + "</div>");
             var data = [];
 
-            for (var i = 0; i < parent.container.find("tbody tr").length; i++) {
-                var a = parent.container.find("tbody tr:nth-child(" + i + ") td:nth-child(" + (this.cellIndex + 1) + ")").text();
+            for (var i = 0; i < _this.container.find("tbody tr").length; i++) {
+                var a = _this.container.find("tbody tr:nth-child(" + i + ") td:nth-child(" + (this.cellIndex + 1) + ")").text();
                 if (a !== "") {
                     data.push(a);
                 }
             }
             data.sort(function (a, b) {
                 if (isNaN(a) === false && isNaN(b) === false) {
-                    return parent.sortType === -1 ? parseFloat(b) - parseFloat(a) : parseFloat(a) - parseFloat(b);
+                    return _this.sortType === -1 ? parseFloat(b) - parseFloat(a) : parseFloat(a) - parseFloat(b);
                 } else {
-                    return parent.sortType === -1 ? a < b : a > b;
+                    return _this.sortType === -1 ? a < b : a > b;
                 }
             });
 
             for (var i = 0; i < data.length; i++) {
-                var a = parent.container.find("tbody tr td:nth-child(" + (this.cellIndex + 1) + "):contains('" + data[i] + "')").parents("tr");
-                parent.container.find("tbody tr td:nth-child(" + (this.cellIndex + 1) + "):contains('" + data[i] + "')").parents("tr").remove();
-                parent.container.find("tbody").append(a);
+                var a = _this.container.find("tbody tr td:nth-child(" + (this.cellIndex + 1) + "):contains('" + data[i] + "')").parents("tr");
+                _this.container.find("tbody tr td:nth-child(" + (this.cellIndex + 1) + "):contains('" + data[i] + "')").parents("tr").remove();
+                _this.container.find("tbody").append(a);
             }
 
         }
@@ -251,8 +251,8 @@ $.fn.bsTable = function (params) {
                 text: this.buttons[i].text
             });
             button.click(function () {
-                if (typeof parent.buttons[i].action === "function") {
-                    parent.buttons[i].action();
+                if (typeof _this.buttons[i].action === "function") {
+                    _this.buttons[i].action();
                 }
 
             });
@@ -261,16 +261,16 @@ $.fn.bsTable = function (params) {
 
     }
 
-    parent.container.prepend(this.buttonsDiv);
+    _this.container.prepend(this.buttonsDiv);
 
 
     /* this.theadCount = this.find("thead tr th").length;*/
 
 
     $.ajax({
-        type: parent.ajax.type,
-        url: parent.ajax.url,
-        data: parent.ajax.data,
+        type: _this.ajax.type,
+        url: _this.ajax.url,
+        data: _this.ajax.data,
         success: function (response) {
             if (typeof  response === "string") {
                 response = JSON.parse(response);
@@ -282,32 +282,32 @@ $.fn.bsTable = function (params) {
                     response.data = response;
                 }
             }
-            if (parent.columns === "") {
-                parent.columns = response.columns;
+            if (_this.columns === "") {
+                _this.columns = response.columns;
             }
 
-            parent.totalData = response.data.length;
+            _this.totalData = response.data.length;
             for (let i = 0; i < response.data.length; i++) {
                 let tr = $('<tr/>', {});
-                for (let k = 0; k < parent.columns.length; k++) {
+                for (let k = 0; k < _this.columns.length; k++) {
                     let td = $('<td/>', {
-                        html: response.data[i][parent.columns[k].data],
-                        column: parent.columns[k].data,
-                        "data-value": response.data[i][parent.columns[k].data]
+                        html: response.data[i][_this.columns[k].data],
+                        column: _this.columns[k].data,
+                        "data-value": response.data[i][_this.columns[k].data]
                     });
                     tr.append(td);
 
                 }
-                parent.tbody.append(tr);
-                if (i >= parent.dataLength) {
+                _this.tbody.append(tr);
+                if (i >= _this.dataLength) {
                     tr.hide();
                 }
             }
-            if (parent.container.find("thead").length > 0) {
-                parent.container.find("thead tr th").css({});
+            if (_this.container.find("thead").length > 0) {
+                _this.container.find("thead tr th").css({});
             }
             if (response.data.length <= 0) {
-                parent.tbody.html("Tabloda Veri Yok");
+                _this.tbody.html("Tabloda Veri Yok");
                 return;
             }
 
@@ -324,7 +324,7 @@ $.fn.bsTable = function (params) {
 
         var obj = {};
 
-        var row = parent.container.find("tbody tr.selected");
+        var row = _this.container.find("tbody tr.selected");
 
         if (row.length > 0) {
 
@@ -345,7 +345,7 @@ $.fn.bsTable = function (params) {
 
         var obj = {};
 
-        var row = parent.container.find("tbody tr").eq(index);
+        var row = _this.container.find("tbody tr").eq(index);
 
         if (row.length > 0) {
 
@@ -364,7 +364,7 @@ $.fn.bsTable = function (params) {
 
     this.getRows = function () {
         var arr = [];
-        var rows = parent.container.find("tbody tr");
+        var rows = _this.container.find("tbody tr");
         if (rows.length > 0) {
             rows.each(function (index) {
                 var row = $(this);
@@ -401,50 +401,50 @@ $.bsAlert = function (params, callback) {
     this.disableClose = false;
     this.buttons = "";
 
-    var parent = this;
+    var _this = this;
 
 
     if (typeof params !== "undefined") {
 
 
         if (typeof params.type !== "undefined") {
-            parent.type = params.type;
+            _this.type = params.type;
         }
 
         if (typeof params.title !== "undefined") {
-            parent.title = params.title;
+            _this.title = params.title;
         }
 
         if (typeof params.content !== "undefined") {
-            parent.content = params.content;
+            _this.content = params.content;
         }
 
         if (typeof  params.showConfirmButton !== "undefined") {
-            parent.showConfirmButton = params.showConfirmButton;
+            _this.showConfirmButton = params.showConfirmButton;
         }
 
         if (typeof params.confirmButtonText !== "undefined") {
-            parent.confirmButtonText = params.confirmButtonText;
+            _this.confirmButtonText = params.confirmButtonText;
         }
 
         if (typeof params.confirmButtonBackground !== "undefined") {
-            parent.confirmButtonBackground = params.confirmButtonBackground;
+            _this.confirmButtonBackground = params.confirmButtonBackground;
         }
 
         if (typeof params.confirmButtonTextColor !== "undefined") {
-            parent.confirmButtonTextColor = params.confirmButtonTextColor;
+            _this.confirmButtonTextColor = params.confirmButtonTextColor;
         }
 
         if (typeof params.closable !== "undefined") {
-            parent.closable = params.closable;
+            _this.closable = params.closable;
         }
 
         if (typeof params.disableClose !== "undefined") {
-            parent.disableClose = params.disableClose;
+            _this.disableClose = params.disableClose;
         }
 
         if (typeof params.buttons !== "undefined") {
-            parent.buttons = params.buttons;
+            _this.buttons = params.buttons;
         }
 
     }
@@ -456,9 +456,9 @@ $.bsAlert = function (params, callback) {
         class: "bs-alert-body"
     });
 
-    if (parent.closable === true) {
-        parent.container.click(function () {
-            parent.close();
+    if (_this.closable === true) {
+        _this.container.click(function () {
+            _this.close();
         });
     }
 
@@ -469,7 +469,7 @@ $.bsAlert = function (params, callback) {
 
     this.iconContent = $('<div/>', {
         class: "bs-alert-icon-content",
-        html: parent.type === "success" ? "&#10004;" : parent.type === "danger" ? "&#x274C;" : ""
+        html: _this.type === "success" ? "&#10004;" : _this.type === "danger" ? "&#x274C;" : ""
     });
     this.iconContainer.append(this.iconContent);
 
@@ -479,7 +479,7 @@ $.bsAlert = function (params, callback) {
     });
     this.titleContent = $('<div/>', {
         class: "bs-alert-title-content",
-        html: parent.title
+        html: _this.title
     });
     this.titleContainer.append(this.titleContent);
 
@@ -489,7 +489,7 @@ $.bsAlert = function (params, callback) {
     });
     this.contentContent = $('<div/>', {
         class: "bs-alert-content-content",
-        html: parent.content
+        html: _this.content
     });
     this.contentContainer.append(this.contentContent);
 
@@ -499,8 +499,8 @@ $.bsAlert = function (params, callback) {
     });
 
 
-    if (typeof parent.buttons === "object") {
-        parent.buttons.forEach(function (e) {
+    if (typeof _this.buttons === "object") {
+        _this.buttons.forEach(function (e) {
             var btn = $('<button/>', {
                 class: "bs-alert-button",
                 type: "button",
@@ -509,13 +509,13 @@ $.bsAlert = function (params, callback) {
                 "btn-val": e.value
             });
             if (typeof e.show === "undefined" || e.show !== true) {
-                parent.buttonsContainer.append(btn);
+                _this.buttonsContainer.append(btn);
             }
             btn.click(function () {
                 if (typeof callback === "function") {
                     callback($(this).attr("btn-val"));
-                    if (parent.disableClose !== true) {
-                        parent.close();
+                    if (_this.disableClose !== true) {
+                        _this.close();
                     }
                 }
             });
@@ -531,21 +531,21 @@ $.bsAlert = function (params, callback) {
     this.container.append(this.body);
 
 
-    $("body").append(parent.container);
+    $("body").append(_this.container);
 
     this.close = function () {
-        parent.body.css("animation-name", "zoomOut");
+        _this.body.css("animation-name", "zoomOut");
         setTimeout(function () {
-            parent.container.remove();
+            _this.container.remove();
         }, 300);
     };
 
     this.updateTitle = function (title) {
-        parent.container.find(".bs-alert-title-content").html(title);
+        _this.container.find(".bs-alert-title-content").html(title);
     };
 
     this.updateContent = function (content) {
-        parent.container.find(".bs-alert-content-content").html(content);
+        _this.container.find(".bs-alert-content-content").html(content);
     };
 
     return this;
@@ -558,7 +558,7 @@ $.bsNotification = function (params, callback) {
     this.content = "";
     this.showSingle = false;
     this.duration = 2000;
-    var parent = this;
+    var _this = this;
 
     if (typeof params !== "undefined") {
 
@@ -578,15 +578,15 @@ $.bsNotification = function (params, callback) {
         }
 
     }
-    if (parent.showSingle === true) {
+    if (_this.showSingle === true) {
         $(".bs-notification").remove();
     }
     let notificationsCount = $(".bs-notification").length;
 
     this.div = $('<div/>', {
-        class: "bs-notification bs-notification-" + parent.type,
+        class: "bs-notification bs-notification-" + _this.type,
         style: "top:" + notificationsCount * 40 + "px;",
-        text: parent.content
+        text: _this.content
     });
 
     this.div.click(function () {
@@ -601,7 +601,7 @@ $.bsNotification = function (params, callback) {
     this.div.fadeIn("fast", function () {
         setTimeout(function () {
             checkRemove();
-        }, parent.duration);
+        }, _this.duration);
     });
 
     function checkRemove() {
@@ -641,15 +641,15 @@ $.bsWindow = function (params) {
 
     this.isFullScreen = false;
 
-    var parent = this;
+    var _this = this;
 
     this.show = function () {
-        parent.visible = true;
-        parent.bsContainer.show();
+        _this.visible = true;
+        _this.bsContainer.show();
     };
     this.hide = function () {
-        parent.visible = false;
-        parent.bsContainer.hide();
+        _this.visible = false;
+        _this.bsContainer.hide();
     };
     if (typeof params !== "undefined") {
 
@@ -808,23 +808,23 @@ $.bsWindow = function (params) {
     }
 
     this.bsHeader.dblclick(function () {
-        if (parent.isFullScreen === true) {
-            parent.restore();
+        if (_this.isFullScreen === true) {
+            _this.restore();
         } else {
-            parent.maximize();
+            _this.maximize();
         }
     });
 
     this.closeButton.click(function () {
 
-        parent.bsContainer.remove();
+        _this.bsContainer.remove();
 
     });
 
 
     this.maximize = function () {
-        parent.isFullScreen = true;
-        parent.bsContainer.css({
+        _this.isFullScreen = true;
+        _this.bsContainer.css({
             "left": "0",
             "right": "0",
             "top": "0",
@@ -836,10 +836,10 @@ $.bsWindow = function (params) {
     };
 
     this.restore = function () {
-        parent.isFullScreen = false;
-        parent.bsContainer.width(parent.width);
-        parent.bsContainer.height(parent.height);
-        parent.bsContainer.css({
+        _this.isFullScreen = false;
+        _this.bsContainer.width(_this.width);
+        _this.bsContainer.height(_this.height);
+        _this.bsContainer.css({
             "top": Math.max(0, ($(window).height() - this.bsContainer.outerHeight()) / 2),
             "left": Math.max(0, ($(window).width() - this.bsContainer.outerHeight()) / 2)
         });
@@ -850,7 +850,7 @@ $.bsWindow = function (params) {
     };
 
     if (this.show === false) {
-        $(parent.bsContainer).hide();
+        $(_this.bsContainer).hide();
     }
     if (this.xPosition === "left") {
         this.bsContainer.css({
@@ -915,13 +915,16 @@ $.fn.bsDatePicker = function (params) {
 
 
     this.format = "d-m-y";
+    this.dateParam = null;
 
-    var parent = this;
+    var _this = this;
 
+    var _params = null;
 
     if (typeof params !== "undefined") {
+        _params = params;
         if (typeof params.format !== "undefined") {
-            parent.format = params.format;
+            _this.format = params.format;
         }
     }
 
@@ -930,10 +933,10 @@ $.fn.bsDatePicker = function (params) {
 
     var currentDate = new Date();
 
-    var currentDay = currentDate.getDate();
-    var currentMonth = currentDate.getMonth() + 1;
-    var currentYear = currentDate.getFullYear();
-    var currentDayOfWeek = currentDate.getDay();
+    this.currentDay = currentDate.getDate();
+    this.currentMonth = currentDate.getMonth() + 1;
+    this.currentYear = currentDate.getFullYear();
+    this.currentDayOfWeek = currentDate.getDay();
 
     this.container = $('<div/>', {
         class: "bs-datepicker-container"
@@ -967,13 +970,13 @@ $.fn.bsDatePicker = function (params) {
 
     this.topCenter = $('<div/>', {
         class: "bs-datepicker-top-center",
-        html: getMonth(currentMonth - 1) + " " + currentYear,
-        month: currentMonth,
-        year: currentYear
+        html: getMonth(_this.currentMonth - 1) + " " + _this.currentYear,
+        month: _this.currentMonth,
+        year: _this.currentYear
     });
 
-    parent.topLeftArrow.click(function () {
-        var el = parent.next(".bs-datepicker-container").find(".bs-datepicker-top-center");
+    _this.topLeftArrow.click(function () {
+        var el = _this.next(".bs-datepicker-container").find(".bs-datepicker-top-center");
         var newMonth = parseInt(el.attr("month")) - 1;
         if (newMonth < 1) {
             newMonth = 12;
@@ -984,8 +987,8 @@ $.fn.bsDatePicker = function (params) {
         el.html(getMonth(el.attr("month") - 1) + " " + el.attr("year"));
     });
 
-    parent.topRightArrow.click(function () {
-        var el = parent.next(".bs-datepicker-container").find(".bs-datepicker-top-center");
+    _this.topRightArrow.click(function () {
+        var el = _this.next(".bs-datepicker-container").find(".bs-datepicker-top-center");
         var newMonth = parseInt(el.attr("month")) + 1;
         if (newMonth > 12) {
             newMonth = 1;
@@ -1004,61 +1007,97 @@ $.fn.bsDatePicker = function (params) {
     this.tbody = $('<tbody/>', {});
 
 
-    parent.table.append(parent.thead);
-    parent.table.append(parent.tbody);
+    // var tr = $('<tr/>', {});
+    // for (var i = 0; i < 7; i++) {
+    //
+    //     var td = $('<th/>', {
+    //         html: getDay(i)
+    //     });
+    //     tr.append(td);
+    // }
+    // _this.thead.append(tr);
 
-    parent.top.append(parent.topLeftArrow);
-    parent.top.append(parent.topCenter);
-    parent.top.append(parent.topRightArrow);
+    _this.table.append(_this.thead);
+    _this.table.append(_this.tbody);
+
+    _this.top.append(_this.topLeftArrow);
+    _this.top.append(_this.topCenter);
+    _this.top.append(_this.topRightArrow);
 
 
-    parent.middle.append(parent.table);
+    _this.middle.append(_this.table);
 
-    parent.body.append(parent.top);
-    parent.body.append(parent.middle);
-    parent.body.append(parent.bottom);
+    _this.body.append(_this.top);
+    _this.body.append(_this.middle);
+    _this.body.append(_this.bottom);
 
-    parent.container.append(parent.body);
+    _this.container.append(_this.body);
 
-    parent.click(function () {
-        if (getContainer().length === 0) {
-            parent.bsDatePicker(params);
-            parent.after(parent.container);
-            changeDate();
-        }
+    _this.click(function () {
+        getContainer().show();
     });
 
 
-    parent.focus(function () {
-        if (getContainer().length === 0) {
-            parent.bsDatePicker(params);
-            parent.after(parent.container);
-            changeDate();
-        }
-    });
+    // _this.focus(function () {
+    //     getContainer().show();
+    // });
 
-    parent.blur(function () {
+    _this.blur(function () {
         if (getContainer().length > 0 && !getContainer().is(":active")) {
-            parent.close();
+            _this.close();
         }
     });
 
 
-    function changeDate() {
+    function changeDate(withDateParam) {
         getContainer().find("table tbody").html("");
 
+        if (typeof withDateParam === "undefined") {
+            withDateParam = false;
+        }
+
+
+        // if (_this.dateParam !== null && !isNaN(new Date(_this.dateParam)) && withDateParam === true) {
+        //     date = new Date(_this.dateParam);
+        //     month = date.getMonth() + 1;
+        //     year = date.getFullYear();
+        //     getContainer().find(".bs-datepicker-top-center").html(getMonth(month - 1) + " " + year);
+        //     getContainer().find(".bs-datepicker-top-center").attr("month", month);
+        //     getContainer().find(".bs-datepicker-top-center").attr("year", year);
+        // }
 
         for (var i = 1; i <= 31; i++) {
             if (i % 7 == 0 || i === 1) {
                 var tr = $('<tr/>', {});
             }
+
+
             var day = i;
             var month = getContainer().find(".bs-datepicker-top-center").attr("month");
             var year = getContainer().find(".bs-datepicker-top-center").attr("year");
             var date = new Date(year + "-" + month + "-" + day);
 
+            var selectedDay = _this.currentDay;
+
+            // if (withDateParam === true && !isNaN(new Date(_this.dateParam))) {
+            //     var date2 = new Date(_this.dateParam);
+            //     // day = date.getDate();
+            //     month = date2.getMonth() + 1;
+            //     year = date2.getFullYear();
+            //     selectedDay = date2.getDate();
+            // }
+
+
+            // if (i === 1) {
+            // alert(getDay(date.getDay()));
+            // if (date.getDay() === 0) {
+            //     alert("asd");
+            // }
+            // }
+
+
             var td = $('<td/>', {
-                class: "bs-datepicker-middle-table-td " + (i === currentDay ? "bs-datepicker-current-day" : ""),
+                class: "bs-datepicker-middle-table-td " + ((!isNaN(new Date(_this.dateParam)) && withDateParam === true && false ? (i === selectedDay) : (i === selectedDay)) ? "bs-datepicker-selected-day" : ""),
                 html: i + "<br>" + getDay(date.getDay()),
                 day: date.getDate(),
                 month: month,
@@ -1067,12 +1106,12 @@ $.fn.bsDatePicker = function (params) {
             });
 
             td.click(function () {
-                parent.tbody.find(".bs-datepicker-middle-table-td").removeClass("bs-datepicker-current-day");
-                $(this).addClass("bs-datepicker-current-day");
-                var dateStr = (parent.format.replace("d", $(this).attr("day")).replace("m", $(this).attr("month")).replace("y", $(this).attr("year")));
-                parent.val(dateStr);
+                _this.tbody.find(".bs-datepicker-middle-table-td").removeClass("bs-datepicker-selected-day");
+                $(this).addClass("bs-datepicker-selected-day");
+                var dateStr = (_this.format.replace("d", $(this).attr("day")).replace("m", $(this).attr("month")).replace("y", $(this).attr("year")));
+                _this.val(dateStr);
                 setTimeout(function () {
-                    parent.close();
+                    _this.close();
                 }, 50);
             });
             tr.append(td);
@@ -1081,6 +1120,10 @@ $.fn.bsDatePicker = function (params) {
         }
 
     }
+
+
+    _this.after(_this.container);
+    changeDate();
 
 
     function getMonth(index) {
@@ -1094,6 +1137,7 @@ $.fn.bsDatePicker = function (params) {
     }
 
     function getDay(index) {
+        // --index;
         if (index < 0) {
             index = 0;
         }
@@ -1103,13 +1147,19 @@ $.fn.bsDatePicker = function (params) {
         return days[index];
     }
 
+    function getContainer() {
+        return _this.next(".bs-datepicker-container");
+    }
+
     this.close = function () {
-        getContainer().remove();
+        getContainer().hide();
     };
 
-    function getContainer() {
-        return parent.next(".bs-datepicker-container");
-    }
+    this.setDate = function (date) {
+        _this.dateParam = date;
+        changeDate(true);
+    };
+
 
     return this;
 };
