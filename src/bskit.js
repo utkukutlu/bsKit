@@ -267,58 +267,67 @@ $.fn.bsTable = function (params) {
     /* this.theadCount = this.find("thead tr th").length;*/
 
 
-    $.ajax({
-        type: _this.ajax.type,
-        url: _this.ajax.url,
-        data: _this.ajax.data,
-        success: function (response) {
-            if (typeof  response === "string") {
-                response = JSON.parse(response);
-                if (typeof response.data === "undefined") {
-                    response.data = response;
+
+    function request() {
+        $.ajax({
+            type: _this.ajax.type,
+            url: _this.ajax.url,
+            data: _this.ajax.data,
+            success: function (response) {
+                if (typeof  response === "string") {
+                    response = JSON.parse(response);
+                    if (typeof response.data === "undefined") {
+                        response.data = response;
+                    }
+                } else if (typeof  response === "object") {
+                    if (typeof response.data === "undefined") {
+                        response.data = response;
+                    }
                 }
-            } else if (typeof  response === "object") {
-                if (typeof response.data === "undefined") {
-                    response.data = response;
+                if (_this.columns === "") {
+                    _this.columns = response.columns;
                 }
-            }
-            if (_this.columns === "") {
-                _this.columns = response.columns;
-            }
 
-            _this.totalData = response.data.length;
-            for (let i = 0; i < response.data.length; i++) {
-                let tr = $('<tr/>', {});
-                for (let k = 0; k < _this.columns.length; k++) {
-                    let td = $('<td/>', {
-                        html: response.data[i][_this.columns[k].data],
-                        column: _this.columns[k].data,
-                        "data-value": response.data[i][_this.columns[k].data]
-                    });
-                    tr.append(td);
+                _this.totalData = response.data.length;
+                for (let i = 0; i < response.data.length; i++) {
+                    let tr = $('<tr/>', {});
+                    for (let k = 0; k < _this.columns.length; k++) {
+                        let td = $('<td/>', {
+                            html: response.data[i][_this.columns[k].data],
+                            column: _this.columns[k].data,
+                            "data-value": response.data[i][_this.columns[k].data]
+                        });
+                        tr.append(td);
 
+                    }
+                    _this.tbody.append(tr);
+                    if (i >= _this.dataLength) {
+                        tr.hide();
+                    }
                 }
-                _this.tbody.append(tr);
-                if (i >= _this.dataLength) {
-                    tr.hide();
+                if (_this.container.find("thead").length > 0) {
+                    _this.container.find("thead tr th").css({});
                 }
+                if (response.data.length <= 0) {
+                    _this.tbody.html("Tabloda Veri Yok");
+                    return;
+                }
+
+                rePage();
+
+
+            },
+            error: function (e) {
+
             }
-            if (_this.container.find("thead").length > 0) {
-                _this.container.find("thead tr th").css({});
-            }
-            if (response.data.length <= 0) {
-                _this.tbody.html("Tabloda Veri Yok");
-                return;
-            }
+        });
+    }
 
-            rePage();
+    request();
 
-
-        },
-        error: function (e) {
-
-        }
-    });
+    // this.refresh = function () {
+    //     request();
+    // };
 
     this.getSelectedRow = function () {
 
