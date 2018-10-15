@@ -267,7 +267,6 @@ $.fn.bsTable = function (params) {
     /* this.theadCount = this.find("thead tr th").length;*/
 
 
-
     function request() {
         $.ajax({
             type: _this.ajax.type,
@@ -459,7 +458,7 @@ $.bsAlert = function (params, callback) {
     }
 
     this.container = $('<div/>', {
-        class: "bs-alert-container"
+        class: "bs-alert-container bs-alert-" + _this.type
     });
     this.body = $('<div/>', {
         class: "bs-alert-body"
@@ -478,7 +477,7 @@ $.bsAlert = function (params, callback) {
 
     this.iconContent = $('<div/>', {
         class: "bs-alert-icon-content",
-        html: _this.type === "success" ? "&#10004;" : _this.type === "danger" ? "&#x274C;" : ""
+        htmls: _this.type === "success" ? "&#10004;" : _this.type === "danger" ? "&#x274C;" : ""
     });
     this.iconContainer.append(this.iconContent);
 
@@ -1171,4 +1170,14 @@ $.fn.bsDatePicker = function (params) {
 
 
     return this;
+};
+$.bsRedirect = function (url, time) {
+
+    if (typeof time === "undefined") {
+        time = 0;
+    }
+    setTimeout(function () {
+        window.location.href = url;
+    }, parseInt(time));
+
 };

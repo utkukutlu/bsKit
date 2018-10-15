@@ -8,7 +8,7 @@
 <body>
 
 
-<table border="1" class="table table-bordered table-striped">
+<table class="table">
     <thead>
     <tr>
         <th>UserId</th>
@@ -22,7 +22,8 @@
 
 <hr>
 
-<button class="bs-alert-btn">Bs Alert</button>
+<button class="bs-alert-btn" data-type="success">Success Bs Alert</button>
+<button class="bs-alert-btn" data-type="error">Error Bs Alert</button>
 <button class="bs-notification-btn" data-type="success">Success Bs Notification</button>
 <button class="bs-notification-btn" data-type="info">Info Bs Notification</button>
 <button class="bs-notification-btn" data-type="warning">Warning Bs Notification</button>
@@ -117,7 +118,7 @@
         $(".bs-alert-btn").click(function () {
 
             var bsAlert = $.bsAlert({
-                type: "success",
+                type: $(this).data("type"),
                 title: "Title",
                 content: "Content",
                 closable: false,
