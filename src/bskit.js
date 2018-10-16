@@ -902,6 +902,10 @@ $.fn.bsValidate = function () {
             if (($(this).val() === null || $(this).val() === "") && ($(this).attr("required") !== undefined || $(this).attr("required") !== false)) {
                 r = false;
             }
+        } else if ($(this).attr("type") === "password") {
+            if (($(this).val() === null || $(this).val() === "") && ($(this).attr("required") !== undefined || $(this).attr("required") !== false)) {
+                r = false;
+            }
         } else if ($(this).attr("type") === "radio") {
             if (form.find("input[type='radio'][name='" + $(this).attr("name") + "']:checked").length === 0) {
                 r = false;
