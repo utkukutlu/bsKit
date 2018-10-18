@@ -1187,7 +1187,8 @@ $.bsRedirect = function (url, time) {
 };
 
 
-$.bsLightBox = function () {
+$.fn.bsLightBox = function (params) {
 
+    var _this = this;
 
 };
