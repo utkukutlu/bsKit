@@ -49,6 +49,16 @@
     <button name="validate" type="button">Validate</button>
 </form>
 
+<hr>
+
+<div class="images">
+    <img src="https://cdn-images-1.medium.com/max/1200/0*ngXgBNNdx6iiWP8q.png" alt="" width="200" height="200">
+    <img src="https://www.codingdojo.com/blog/wp-content/uploads/most-popular-programming-languages-of-2018.png" alt=""
+         width="200" height="200">
+    <img src="https://www.fintechnews.org/wp-content/uploads/2018/08/mundo-1.jpg" alt="" width="200" height="200">
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="../src/bskit.js"></script>
 
@@ -175,6 +185,8 @@
         $("input[name='text']").bsDatePicker({
             format: "d-m-y"
         });
+
+        $(".images img").bsLightBox();
 
 
     });

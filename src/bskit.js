@@ -6,6 +6,10 @@
  */
 
 
+$.fn.tagName = function () {
+    return this.prop("tagName");
+};
+
 $.fn.bsTable = function (params) {
 
     this.id = "";
@@ -1190,5 +1194,74 @@ $.bsRedirect = function (url, time) {
 $.fn.bsLightBox = function (params) {
 
     var _this = this;
+
+    _this.backgroundAlpha = 0.5;
+    _this.currentIndex = 0;
+    _this.itemCount = _this.length;
+
+
+    if (typeof params !== "undefined") {
+        if (typeof params.backgroundAlpha !== "undefined") {
+            _this.backgroundAlpha = params.backgroundAlpha;
+        }
+    }
+
+
+    _this.click(function () {
+        var imgEl = $(this);
+
+        _this.currentIndex = imgEl.index();
+
+
+        _this.container = $('<div/>', {
+            class: "bs-lightbox-container",
+            style: "background: rgba(0, 0, 0, " + _this.backgroundAlpha + ");",
+            html: ""
+        });
+
+        _this.content = $('<div/>', {
+            class: "bs-lightbox-content",
+
+        });
+
+        _this.imageContent = $('<img/>', {
+            src: imgEl.attr("src")
+        });
+
+        _this.content.append(_this.imageContent);
+
+        _this.container.append(_this.content);
+
+
+        _this.leftButton = $('<div/>', {
+            class: "bs-lightbox-button bs-lightbox-button-left",
+            html: "<"
+        });
+
+        _this.rightButton = $('<div/>', {
+            class: "bs-lightbox-button bs-lightbox-button-right",
+            html: ">"
+        });
+
+        $("body").append(_this.container);
+
+        _this.content.css("width", _this.imageContent.width() + "px");
+
+        // _this.container.append(_this.leftButton);
+        // _this.container.append(_this.rightButton);
+        // _this.leftButton.css("left", (_this.content.position().left * 2) + "px");
+        // _this.rightButton.css("right", (_this.content.position().left) + "px");
+
+
+        $(".bs-lightbox-container").click(function () {
+            // _this.content.css("animation-name", "zoomOut");
+            // setTimeout(function () {
+            //     $("body .bs-lightbox-container").remove();
+            // }, 300);
+
+            $("body .bs-lightbox-container").remove();
+        });
+
+    });
 
 };
