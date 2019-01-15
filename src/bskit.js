@@ -6,71 +6,86 @@
  */
 
 
-$.fn.tagName = function () {
+$.fn.bsTagName = function () {
     return this.prop("tagName");
 };
 
 $.fn.bsTable = function (params) {
 
-    this.id = "";
-
-    this.ajax = "";
-    this.columns = "";
-    this.lengthMenu = "";
-
-    this.bodyData = "";
-    this.trData = [];
-    this.dataLength = 20;
-    this.theadCount = 0;
-    this.totalData = 0;
-    this.sortType = 1;
-    this.buttons = "";
-
     var _this = this;
 
+
+    _this.id = "";
+
+    _this.ajax = "";
+    _this.columns = "";
+    _this.lengthMenu = "";
+
+    _this.bodyData = "";
+    _this.trData = [];
+    _this.dataLength = 20;
+    _this.theadCount = 0;
+    _this.totalData = 0;
+    _this.sortType = 1;
+    _this.buttons = "";
+    _this.selectedRowBgColor = "#E0E0E0";
+    _this.selectedRowTextColor = "#000000";
+    _this.src = "";
 
     if (typeof params !== "undefined") {
 
         if (typeof params.data !== "undefined") {
-            this.bodyData = params.data;
+            _this.bodyData = params.data;
+        }
+        if (typeof params.src !== "undefined") {
+            _this.src = params.src;
         }
         if (typeof params.columns !== "undefined") {
-            this.columns = params.columns;
+            _this.columns = params.columns;
         }
         if (typeof params.ajax !== "undefined") {
-            this.ajax = params.ajax;
+            _this.ajax = params.ajax;
         }
         if (typeof params.lengthMenu !== "undefined") {
-            this.lengthMenu = params.lengthMenu;
+            _this.lengthMenu = params.lengthMenu;
         }
         if (typeof params.dataLength !== "undefined") {
-            this.dataLength = params.dataLength;
+            _this.dataLength = params.dataLength;
         }
         if (typeof params.buttons !== "undefined") {
-            this.buttons = params.buttons;
+            _this.buttons = params.buttons;
+        }
+        if (typeof params.selectedRowBgColor !== "undefined") {
+            _this.selectedRowBgColor = params.selectedRowBgColor;
+        }
+        if (typeof params.selectedRowTextColor !== "undefined") {
+            _this.selectedRowTextColor = params.selectedRowTextColor;
         }
 
     }
 
-    this.container = $('<div/>', {
+    $("head").append("<style>.bs-table-container tbody tr.selected{background: " + _this.selectedRowBgColor + " !important;color: " + _this.selectedRowTextColor + ";}</style>");
+
+
+    _this.container = $('<div/>', {
         class: "bs-table-container"
 
     });
-    this.container.append(this.clone());
-    this.replaceWith(this.container);
+    _this.container.append(_this.clone());
+    _this.replaceWith(_this.container);
 
-    this.html(this.container.html());
+    _this.html(_this.container.html());
 
-    this.table = "";
-    this.thead = $('<thead/>', {});
-    this.tbody = $('<tbody/>', {});
-    this.tr = $('<tr/>', {});
-    this.th = $('<th/>', {});
-    this.td = $('<td/>', {});
+    _this.table = "";
+    _this.thead = $('<thead/>', {});
+    _this.tbody = $('<tbody/>', {});
+    _this.tr = $('<tr/>', {});
+    _this.th = $('<th/>', {});
+    _this.td = $('<td/>', {});
 
-    this.table = this.container.find("table");
+    _this.table = _this.container.find("table");
 
-    if (this.table.find("tbody").length <= 0) {
+    if (_this.table.find("tbody").length <= 0) {
         _this.table.append(_this.tbody);
     } else {
         _this.tbody = _this.table.find("tbody");
@@ -118,6 +133,9 @@ $.fn.bsTable = function (params) {
             class: "bs-table-pagination"
         });
 
+        var hasNext = false;
+        var hasPrev = false;
+
         _this.container.find(".bs-table-pagination").remove();
 
         for (var i = 1; i <= pageLength; i++) {
@@ -144,14 +162,67 @@ $.fn.bsTable = function (params) {
                     }
                 }
             });
+
             pagesLi.append(pagesA);
             pagination.append(pagesLi);
 
+
         }
+        // if (pageLength > 0) {
+        //     hasNext = true;
+        // }
+        //
+        // // if (_this.container.find(".bs-table-pagination-a.bs-table-pagination-a-active").parents("li").prev("li").find(".bs-table-pagination-a").length > 0) {
+        // //     hasPrev = true;
+        // // }
+        //
+        // if (hasNext) {
+        //     var nextLi = $('<li/>', {
+        //         class: "bs-table-pagination-li",
+        //     });
+        //     var nextA = $('<a/>', {
+        //         class: "bs-table-pagination-a bs-table-pagination-next",
+        //         text: ">",
+        //         href: "#"
+        //     });
+        //     nextA.click(function () {
+        //         console.dir("click");
+        //         var n = _this.container.find(".bs-table-pagination-a.bs-table-pagination-a-active").parents("li").next("li").find(".bs-table-pagination-a");
+        //         if (n.length > 0) {
+        //             n.trigger("click");
+        //         }
+        //         $(this).unbind("click");
+        //         rePage();
+        //     });
+        //     nextLi.append(nextA);
+        //     pagination.append(nextLi);
+        // }
+
+
+        // if (hasPrev) {
+        //     var prevLi = $('<li/>', {
+        //         class: "bs-table-pagination-li",
+        //     });
+        //     var prevA = $('<a/>', {
+        //         class: "bs-table-pagination-a bs-table-pagination-next",
+        //         text: "<",
+        //         href: "#"
+        //     });
+        //     prevA.click(function () {
+        //         console.dir("click");
+        //         var n = _this.container.find(".bs-table-pagination-a.bs-table-pagination-a-active").parents("li").prev("li").find(".bs-table-pagination-a");
+        //         if (n.length > 0) {
+        //             n.trigger("click");
+        //         }
+        //         $(this).unbind("click");
+        //     });
+        //     prevLi.append(prevA);
+        //     pagination.prepend(prevLi);
+        // }
+
         _this.container.find(".bs-clear-pagination").remove();
         _this.container.append(pagination);
         _this.container.append("<div class='bs-clear bs-clear-pagination'></div>");
-
     }
 
     this.searchBox.keyup(function () {
@@ -247,21 +318,22 @@ $.fn.bsTable = function (params) {
         class: "bs-table-buttons"
     });
 
-    if (this.buttons !== "") {
+    if (_this.buttons !== "") {
 
-        for (let i = 0; i < this.buttons.length; i++) {
-            let button = $('<button/>', {
-                class: "bs-table-button " + this.buttons[i].className,
-                text: this.buttons[i].text
+        _this.buttons.forEach(function (el, index) {
+            var button = $('<button/>', {
+                class: "bs-table-button " + _this.buttons[index].className,
+                text: _this.buttons[index].text
             });
             button.click(function () {
-                if (typeof _this.buttons[i].action === "function") {
-                    _this.buttons[i].action();
+                if (typeof _this.buttons[index].action === "function") {
+                    _this.buttons[index].action();
                 }
 
             });
-            this.buttonsDiv.append(button);
-        }
+            _this.buttonsDiv.append(button);
+        });
+
 
     }
 
@@ -270,6 +342,9 @@ $.fn.bsTable = function (params) {
 
     /* this.theadCount = this.find("thead tr th").length;*/
 
+    if (_this.src !== "") {
+        processData(_this.src);
+    }
 
     function request() {
         $.ajax({
@@ -277,48 +352,7 @@ $.fn.bsTable = function (params) {
             url: _this.ajax.url,
             data: _this.ajax.data,
             success: function (response) {
-                if (typeof  response === "string") {
-                    response = JSON.parse(response);
-                    if (typeof response.data === "undefined") {
-                        response.data = response;
-                    }
-                } else if (typeof  response === "object") {
-                    if (typeof response.data === "undefined") {
-                        response.data = response;
-                    }
-                }
-                if (_this.columns === "") {
-                    _this.columns = response.columns;
-                }
-
-                _this.totalData = response.data.length;
-                for (let i = 0; i < response.data.length; i++) {
-                    let tr = $('<tr/>', {});
-                    for (let k = 0; k < _this.columns.length; k++) {
-                        let td = $('<td/>', {
-                            html: response.data[i][_this.columns[k].data],
-                            column: _this.columns[k].data,
-                            "data-value": response.data[i][_this.columns[k].data]
-                        });
-                        tr.append(td);
-
-                    }
-                    _this.tbody.append(tr);
-                    if (i >= _this.dataLength) {
-                        tr.hide();
-                    }
-                }
-                if (_this.container.find("thead").length > 0) {
-                    _this.container.find("thead tr th").css({});
-                }
-                if (response.data.length <= 0) {
-                    _this.tbody.html("Tabloda Veri Yok");
-                    return;
-                }
-
-                rePage();
-
-
+                processData(response);
             },
             error: function (e) {
 
@@ -326,11 +360,65 @@ $.fn.bsTable = function (params) {
         });
     }
 
-    request();
 
-    // this.refresh = function () {
-    //     request();
-    // };
+    function processData(data) {
+        _this.container.find("tbody").html("");
+        if (typeof  data === "string") {
+            data = JSON.parse(data);
+            if (typeof data.data === "undefined") {
+                data.data = data;
+            }
+        } else if (typeof  data === "object") {
+            if (typeof data.data === "undefined") {
+                data.data = data;
+            }
+        }
+        if (_this.columns === "") {
+            _this.columns = data.columns;
+        }
+
+        _this.totalData = data.data.length;
+
+        for (let i = 0; i < data.data.length; i++) {
+            let tr = $('<tr/>', {});
+            for (let k = 0; k < _this.columns.length; k++) {
+                let td = $('<td/>', {
+                    html: data.data[i][_this.columns[k].data],
+                    column: _this.columns[k].data,
+                    "data-value": data.data[i][_this.columns[k].data]
+                });
+                tr.append(td);
+
+            }
+            _this.tbody.append(tr);
+            if (i >= _this.dataLength) {
+                tr.hide();
+            }
+        }
+
+        if (_this.container.find("thead").length > 0) {
+            _this.container.find("thead tr th").css({});
+        }
+        if (data.data.length <= 0) {
+            _this.tbody.html("Tabloda Veri Yok");
+            return;
+        }
+        rePage();
+    }
+
+    if (_this.ajax !== "") {
+        request();
+    }
+
+
+    this.refresh = function () {
+        _this.container.find('thead .bs-table-sor-type').remove();
+        if (_this.ajax !== "") {
+            request();
+        } else {
+            processData(_this.src);
+        }
+    };
 
     this.getSelectedRow = function () {
 
@@ -395,6 +483,10 @@ $.fn.bsTable = function (params) {
 
     };
 
+    this.getDataLength = function () {
+        return _this.totalData;
+    };
+
 
     return this;
 };
@@ -404,7 +496,7 @@ $.bsAlert = function (params, callback) {
 
     this.title = "";
     this.content = "";
-    this.type = "success";
+    this.alertType = "success";
     this.showConfirmButton = false;
     this.confirmButtonText = "";
     this.confirmButtonBackground = "blue";
@@ -420,7 +512,7 @@ $.bsAlert = function (params, callback) {
 
 
         if (typeof params.type !== "undefined") {
-            _this.type = params.type;
+            _this.alertType = params.type;
         }
 
         if (typeof params.title !== "undefined") {
@@ -462,7 +554,7 @@ $.bsAlert = function (params, callback) {
     }
 
     this.container = $('<div/>', {
-        class: "bs-alert-container bs-alert-" + _this.type
+        class: "bs-alert-container bs-alert-" + _this.alertType
     });
     this.body = $('<div/>', {
         class: "bs-alert-body"
@@ -481,7 +573,7 @@ $.bsAlert = function (params, callback) {
 
     this.iconContent = $('<div/>', {
         class: "bs-alert-icon-content",
-        htmls: _this.type === "success" ? "&#10004;" : _this.type === "danger" ? "&#x274C;" : ""
+        htmls: _this.alertType === "success" ? "&#10004;" : _this.alertType === "danger" ? "&#x274C;" : ""
     });
     this.iconContainer.append(this.iconContent);
 
@@ -566,7 +658,7 @@ $.bsAlert = function (params, callback) {
 
 $.bsNotification = function (params, callback) {
 
-    this.type = "success";
+    this.nType = "success";
     this.content = "";
     this.showSingle = false;
     this.duration = 2000;
@@ -576,7 +668,7 @@ $.bsNotification = function (params, callback) {
 
 
         if (typeof params.type !== "undefined") {
-            this.type = params.type;
+            this.nType = params.type;
         }
         if (typeof params.content !== "undefined") {
             this.content = params.content;
@@ -596,7 +688,7 @@ $.bsNotification = function (params, callback) {
     let notificationsCount = $(".bs-notification").length;
 
     this.div = $('<div/>', {
-        class: "bs-notification bs-notification-" + _this.type,
+        class: "bs-notification bs-notification-" + _this.nType,
         style: "top:" + notificationsCount * 40 + "px;",
         text: _this.content
     });
@@ -650,6 +742,7 @@ $.bsWindow = function (params) {
     this.yPosition = "center";
     this.src = "";
     this.closeButtonContent = "X";
+    this.showFooter = true;
 
     this.isFullScreen = false;
 
@@ -707,6 +800,9 @@ $.bsWindow = function (params) {
         if (typeof params.closeButtonContent !== "undefined") {
             this.closeButtonContent = params.closeButtonContent;
         }
+        if (typeof params.showFooter !== "undefined") {
+            this.showFooter = params.showFooter;
+        }
 
     }
 
@@ -733,11 +829,12 @@ $.bsWindow = function (params) {
 
     this.bsBody = $('<div/>', {
         class: "bs-window-body",
-        html: this.content
+        html: this.content,
+        style: !_this.showFooter ? "height:calc(100% - 30px);" : ""
     });
 
     this.bsFooter = $('<div/>', {
-        class: "bs-window-footer",
+        class: "bs-window-footer"
     });
 
     this.closeButton = $('<div/>', {
@@ -766,7 +863,9 @@ $.bsWindow = function (params) {
     this.bsWindowDiv.append(this.bsBody);
 
 
-    this.bsWindowDiv.append(this.bsFooter);
+    if (this.showFooter) {
+        this.bsWindowDiv.append(this.bsFooter);
+    }
 
     // this.html(this.bsContainer);
 
@@ -1179,6 +1278,7 @@ $.fn.bsDatePicker = function (params) {
 
     return this;
 };
+
 $.bsRedirect = function (url, time) {
 
     if (typeof time === "undefined") {

@@ -1,8 +1,23 @@
-# README #
-# BsKit
-bsKit includes general components what you need like usable table, window, form validator, notification, alerts
+# About #
+BsKit includes general components what you need like usable table, window, form validator, notification, alerts, lightbox
 ### Requirements ###
     JQuery
+
+
+
+### Todos ###
+
+- [] BsTable next and previous page button
+
+- [] BsTable first and last page button
+
+- [] BsTable inline editing
+
+- [] BsTable add info (like showing x to y of n entries)
+
+- [] Add BsCarousel
+
+- [] Add input in BsAlert 
 
 ### License
 <pre>
