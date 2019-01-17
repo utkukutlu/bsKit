@@ -19,10 +19,29 @@
 
 .bs-table-container table {
     border-spacing: 0;
+    border: 1px solid rgba(0, 0, 0, 0.4);
 }
 
-.bs-table-container tbody tr {
-    min-height: 20px;
+.bs-table-container thead tr {
+    position: relative;
+}
+
+.bs-table-container thead tr th {
+    background-color: #ededed;
+    position: relative;
+    cursor: pointer;
+    padding: 5px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    user-select: none;
+    -webkit-transition: all 200ms;
+    -moz-transition: all 200ms;
+    -ms-transition: all 200ms;
+    -o-transition: all 200ms;
+    transition: all 200ms;
+}
+
+.bs-table-container thead tr th:not(:last-child) {
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .bs-table-container tbody tr.selected {
@@ -30,11 +49,11 @@
 }
 
 .bs-table-container tbody tr:nth-child(1n) {
-    background: #f1f1f1;
+    /*background: #f1f1f1;*/
 }
 
 .bs-table-container tbody tr:nth-child(2n) {
-    background: #ffffff;
+    /*background: #ffffff;*/
 }
 
 .bs-table-container tbody tr:hover {
@@ -45,8 +64,18 @@
     border-top: 1px solid #ddd;
 }
 
+.bs-table-container tbody tr td {
+    cursor: pointer;
+    padding: 5px 20px;
+    -webkit-transition: background 500ms;
+    -moz-transition: background 500ms;
+    -ms-transition: background 500ms;
+    -o-transition: background 500ms;
+    transition: background 500ms;
+}
+
 .bs-table-container .bs-table-pagination-a-active {
-    background: #6EB7F0 !important;
+    background: #F7802F !important;
     color: #fff !important;
 }
 
@@ -71,7 +100,7 @@
     float: left;
     margin-top: 10px;
     min-width: 60px;
-    padding: 2px;
+    padding: 4px;
 }
 
 .bs-table-pagination {
@@ -89,25 +118,10 @@
 }
 
 .bs-table-pagination-a {
+    color: #000;
     display: block;
-    padding: 5px 10px;
+    padding: 5px 15px;
     text-decoration: none;
-}
-
-.bs-table-container table {
-    /*clear: both;*/
-}
-
-.bs-table-container thead tr th {
-    position: relative;
-    cursor: pointer;
-    padding: 5px 20px;
-    border-bottom: 1px solid #000;
-}
-
-.bs-table-container tbody tr td {
-    cursor: pointer;
-    padding: 5px 20px;
 }
 
 .bs-table-buttons {

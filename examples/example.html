@@ -7,21 +7,8 @@
 </head>
 <body>
 
-
-<table class="table">
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>User Id</th>
-        <th>Title</th>
-        <th>Body</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-
+<table class="table" style="width: 100%;"></table>
 <hr>
-
 <button class="bs-alert-btn" data-type="success">Success Bs Alert</button>
 <button class="bs-alert-btn" data-type="error">Error Bs Alert</button>
 <hr>
@@ -53,10 +40,13 @@
 <hr>
 
 <div class="images">
-    <img src="https://cdn-images-1.medium.com/max/1200/0*ngXgBNNdx6iiWP8q.png" alt="" width="200" height="200">
-    <img src="https://www.codingdojo.com/blog/wp-content/uploads/most-popular-programming-languages-of-2018.png" alt=""
+    <img src="https://github.githubassets.com/images/modules/site/integrators/google.png" alt="" width="200"
+         height="200">
+    <img src="https://github.githubassets.com/images/modules/site/integrators/slackhq.png" alt="" width="200"
+         height="200">
+    <img src="https://github.githubassets.com/images/modules/site/home-illo-team.svg" alt=""
          width="200" height="200">
-    <img src="https://www.fintechnews.org/wp-content/uploads/2018/08/mundo-1.jpg" alt="" width="200" height="200">
+    <img src="https://github.githubassets.com/images/modules/site/integrators/atom.png" alt="" width="200" height="200">
 </div>
 
 
@@ -70,31 +60,55 @@
     $(function () {
 
         // var src = []; OR var src = {data: []};
-
-
         var src = {
             data: []
         };
 
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 100; i++) {
             src.data.push({
                 userId: Math.floor(Math.random() * 100),
-                id: i,
+                image: "https://github.githubassets.com/images/modules/site/home-illo-team.svg",
+                body: "Body " + i,
                 title: "Title " + i,
-                body: "Body " + i
+                id: i
             });
         }
 
         var table = $("table").bsTable({
             columns: [
-                {data: "id"},
-                {data: "userId"},
-                {data: "title"},
-                {data: "body", sortable: false},
+                {
+                    data: "id",
+                    text: "Id",
+                    width: "50px"
+                },
+                {
+                    data: "image",
+                    text: "Image",
+                    width: "10px",
+                    align: "center",
+                    sortable: false,
+                    render: function (data) {
+                        return "<img src='" + data + "' alt='" + data + "' style='width: 20px;' />";
+                    }
+                },
+                {
+                    data: "userId",
+                    text: "User Id"
+                },
+                {
+                    data: "title",
+                    text: "Title",
+                    sortable: true
+                },
+                {
+                    data: "body",
+                    text: "Body",
+                    sortable: false
+                },
             ],
             src: src,
             // ajax: {
-            //     url: "https://jsonplaceholder.typicode.com/posts",
+            //     url: "url",
             //     type: "GET",
             //     data: {}
             // },
@@ -138,14 +152,43 @@
                     }
                 },
                 {
-                    text: "Refresh Data",
+                    text: "Add New Row and Refresh Data",
                     action: function () {
+                        src.data.push({
+                            userId: Math.floor(Math.random() * 100),
+                            id: src.data.length + 1,
+                            title: "Title " + (src.data.length + 1),
+                            body: "Body " + (src.data.length + 1),
+                            image: "https://github.githubassets.com/images/modules/site/home-illo-team.svg"
+                        });
                         table.refresh();
                     }
                 }
             ],
+            columnChangeable: true,
             selectedRowBgColor: "#F7802F",
-            selectedRowTextColor: "#FFFFFF"
+            selectedRowTextColor: "#FFFFFF",
+            events: {
+                "rowSelected": function (index) {
+                    console.dir("row selected:" + index);
+                },
+                "rowDoubleClick": function (index) {
+                    console.dir("row double click:" + index);
+                },
+                "rowAdded": function (index, data) {
+                    // console.dir("index:" + index);
+                    // console.dir(data);
+                },
+                "completed": function () {
+                    console.dir("table process complete");
+                },
+                "rowUpdated": function () {
+
+                },
+                "columnUpdated": function () {
+
+                }
+            }
 
         });
 

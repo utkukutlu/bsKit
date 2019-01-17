@@ -31,6 +31,8 @@ $.fn.bsTable = function (params) {
     _this.selectedRowBgColor = "#E0E0E0";
     _this.selectedRowTextColor = "#000000";
     _this.src = "";
+    _this.events = "";
+    _this.columnChangeable = false;
 
     if (typeof params !== "undefined") {
 
@@ -61,6 +63,12 @@ $.fn.bsTable = function (params) {
         if (typeof params.selectedRowTextColor !== "undefined") {
             _this.selectedRowTextColor = params.selectedRowTextColor;
         }
+        if (typeof params.events !== "undefined") {
+            _this.events = params.events;
+        }
+        if (typeof params.columnChangeable !== "undefined") {
+            _this.columnChangeable = params.columnChangeable;
+        }
 
     }
 
@@ -84,6 +92,27 @@ $.fn.bsTable = function (params) {
     _this.td = $('<td/>', {});
 
     _this.table = _this.container.find("table");
+
+
+    if (_this.table.find("thead").length <= 0) {
+        var tr = $('<tr/>', {});
+        _this.columns.forEach(function (e) {
+
+            tr.append($('<th/>', {
+                text: (typeof e.text !== "undefined" ? e.text : e.data),
+                column: e.data,
+                style: (typeof e.width !== "undefined" ? ";width:" + e.width : "") + (e.sortable === false ? ";cursor:not-allowed" : ""),
+                align: e.align
+            }));
+
+        });
+        _this.thead.append(tr);
+        _this.table.append(_this.thead);
+
+    } else {
+        _this.thead = _this.table.find("thead");
+    }
+
 
     if (_this.table.find("tbody").length <= 0) {
         _this.table.append(_this.tbody);
@@ -120,7 +149,7 @@ $.fn.bsTable = function (params) {
             } else {
                 _this.tbody.find("tr").eq(i).show();
             }
-            if (_this.lengthSelect.val() == -1) {
+            if (_this.lengthSelect.val() === -1) {
                 _this.tbody.find("tr").eq(i).show();
             }
         }
@@ -265,8 +294,15 @@ $.fn.bsTable = function (params) {
         _this.table.append(this.tbody);
     }
 
+    // _this.container.on("dblclick", "tbody td", function () {
+    //     if (_this.events !== "" && typeof _this.events.rowDoubleClick === "function") {
+    //         _this.events.rowDoubleClick();
+    //     }
+    // });
 
+    var rowClickTime = new Date().getTime();
     _this.container.on("click", "tbody td", function () {
+        var index = $(this).parents("tr").index();
         var tr;
         if ($(this)[0] == 'tr' && false) {
             tr = $(this);
@@ -279,13 +315,26 @@ $.fn.bsTable = function (params) {
         } else {
             _this.container.find("tbody tr").removeClass("selected");
             tr.addClass("selected");
+            if (_this.events !== "" && typeof _this.events.rowSelected === "function") {
+                _this.events.rowSelected(index);
+            }
+        }
+        if ((new Date().getTime() - rowClickTime) < 700) {
+            if (_this.events !== "" && typeof _this.events.rowDoubleClick === "function") {
+                _this.events.rowDoubleClick(index);
+            }
         }
 
+        rowClickTime = new Date().getTime();
     });
 
     _this.container.find("thead tr th").click(function () {
+        var col = $(this).attr("column");
+        var item = _this.columns.filter(function (e) {
+            return e.data === col
+        })[0];
 
-        if (typeof _this.columns[this.cellIndex].sortable === "undefined" || _this.columns[this.cellIndex].sortable !== false) {
+        if (typeof item.sortable === "undefined" || item.sortable !== false) {
             _this.sortType = _this.sortType * -1;
             _this.container.find(".bs-table-sor-type").remove();
             $(this).append("<div class='bs-table-sor-type'>" + (_this.sortType === 1 ? "&#9652;" : "&#9662;") + "</div>");
@@ -298,12 +347,22 @@ $.fn.bsTable = function (params) {
                 }
             }
             data.sort(function (a, b) {
-                if (isNaN(a) === false && isNaN(b) === false) {
-                    return _this.sortType === -1 ? parseFloat(b) - parseFloat(a) : parseFloat(a) - parseFloat(b);
-                } else {
-                    return _this.sortType === -1 ? a < b : a > b;
+                // if (isNaN(a) === false && isNaN(b) === false) {
+                //     return _this.sortType === -1 ? parseFloat(b) - parseFloat(a) : parseFloat(a) - parseFloat(b);
+                // } else {
+                if (a < b) {
+                    return -1;
                 }
+                if (a > b) {
+                    return 1;
+                }
+                return 0;
+                // }
             });
+
+            if (_this.sortType === -1) {
+                data.reverse();
+            }
 
             for (var i = 0; i < data.length; i++) {
                 var a = _this.container.find("tbody tr td:nth-child(" + (this.cellIndex + 1) + "):contains('" + data[i] + "')").parents("tr");
@@ -313,6 +372,128 @@ $.fn.bsTable = function (params) {
 
         }
     });
+
+    if (_this.columnChangeable) {
+        _this.container.find("thead tr th").on("mousedown", function (e) {
+
+            var index = $(this).index();
+
+
+            var thItem = _this.container.find("thead tr th");
+            var trItem = _this.container.find("tbody tr");
+
+            var totalItems = thItem.length;
+
+            var cursorPos = 0;
+            var element = $(this);
+            var offset = 25;
+
+            e = e || window.event;
+            cursorPos = e.clientX;
+
+            var itemPos = element.offset().left;
+
+            $(document).on("mouseup", function () {
+                thItem.eq(index).css({
+                    "transform": "",
+                    "right": ""
+                });
+                $(document).off("mouseup");
+                $(document).off("mousemove");
+            });
+
+            $(document).on("mousemove", function (e) {
+
+
+                cursorPos = e.clientX;
+                thItem.eq(index).css({
+                    "transform": "scale(1.1)",
+                    "right": ((itemPos - cursorPos) + (element.width() / 2)) + "px",
+                    "cursor": "move"
+                });
+
+
+                if (index !== 0) {
+                    if ((itemPos - cursorPos) > offset) {
+
+                        trItem.each(function (i, el) {
+
+
+                            $(el).find("td").eq(index).css({
+                                "background": _this.selectedRowBgColor,
+                                "color": _this.selectedRowTextColor
+                            });
+
+                            thItem.eq(index).css({
+                                "cursor": ""
+                            });
+
+                            trItem.eq(i).find("td").eq(index).insertBefore(trItem.eq(i).find("td").eq(index - 1));
+
+                            setTimeout(function () {
+                                trItem.eq(i).find("td").eq(index - 1).css({
+                                    "background": "",
+                                    "color": ""
+                                });
+                            }, 500);
+
+                        });
+
+                        thItem.eq(index).css({
+                            "transform": "",
+                            "right": ""
+                        });
+
+                        thItem.eq(index).insertBefore(thItem.eq(index - 1));
+
+                        $(document).off("mousemove");
+                        return;
+                    }
+                }
+
+                if (index !== (totalItems - 1)) {
+                    if ((cursorPos - thItem.eq(index + 1).offset().left) > offset) {
+                        trItem.each(function (i, el) {
+
+
+                            $(el).find("td").eq(index).css({
+                                "background": _this.selectedRowBgColor,
+                                "color": _this.selectedRowTextColor
+                            });
+
+                            thItem.eq(index).css({
+                                "cursor": ""
+                            });
+
+                            trItem.eq(i).find("td").eq(index).insertAfter(trItem.eq(i).find("td").eq(index + 1));
+
+                            setTimeout(function () {
+                                trItem.eq(i).find("td").eq(index + 1).css({
+                                    "background": "",
+                                    "color": ""
+                                });
+                            }, 500);
+
+                        });
+
+                        thItem.eq(index).css({
+                            "transform": "",
+                            "right": ""
+                        });
+
+                        thItem.eq(index).insertAfter(thItem.eq(index + 1));
+
+                        $(document).off("mousemove");
+                        return;
+                    }
+                }
+            });
+
+
+        });
+
+    }
+
 
     this.buttonsDiv = $('<div/>', {
         class: "bs-table-buttons"
@@ -382,13 +563,22 @@ $.fn.bsTable = function (params) {
         for (let i = 0; i < data.data.length; i++) {
             let tr = $('<tr/>', {});
             for (let k = 0; k < _this.columns.length; k++) {
+                var r = "";
+                if (typeof _this.columns[k].render === "function") {
+                    r = _this.columns[k].render(data.data[i][_this.columns[k].data])
+                }
+
                 let td = $('<td/>', {
-                    html: data.data[i][_this.columns[k].data],
+                    html: (r !== "" ? r : data.data[i][_this.columns[k].data]),
                     column: _this.columns[k].data,
-                    "data-value": data.data[i][_this.columns[k].data]
+                    "data-value": data.data[i][_this.columns[k].data],
+                    align: _this.columns[k].align
                 });
                 tr.append(td);
 
+            }
+            if (_this.events !== "" && typeof _this.events.rowAdded === "function") {
+                _this.events.rowAdded(i, data.data[i]);
             }
             _this.tbody.append(tr);
             if (i >= _this.dataLength) {
@@ -398,6 +588,9 @@ $.fn.bsTable = function (params) {
 
         if (_this.container.find("thead").length > 0) {
             _this.container.find("thead tr th").css({});
+        }
+        if (_this.events !== "" && typeof _this.events.completed === "function") {
+            _this.events.completed();
         }
         if (data.data.length <= 0) {
             _this.tbody.html("Tabloda Veri Yok");
@@ -410,6 +603,20 @@ $.fn.bsTable = function (params) {
         request();
     }
 
+    this.updateColumn = function (row, column) {
+
+
+        if (_this.events !== "" && typeof _this.events.columnUpdated === "function") {
+            _this.events.columnUpdated();
+        }
+
+    };
+
+    this.updateRow = function (index) {
+        if (_this.events !== "" && typeof _this.events.rowUpdated === "function") {
+            _this.events.rowUpdated();
+        }
+    };
 
     this.refresh = function () {
         _this.container.find('thead .bs-table-sor-type').remove();

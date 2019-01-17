@@ -7,17 +7,29 @@ BsKit includes general components what you need like usable table, window, form 
 
 ### Todos ###
 
-- [] BsTable next and previous page button
+- [ ] BsTable next and previous page button
 
-- [] BsTable first and last page button
+- [ ] BsTable first and last page button
 
-- [] BsTable inline editing
+- [ ] BsTable inline editing
 
-- [] BsTable add info (like showing x to y of n entries)
+- [ ] BsTable multiple select
 
-- [] Add BsCarousel
+- [ ] BsTable update row
 
-- [] Add input in BsAlert 
+- [ ] BsTable update column
+
+- [ ] BsTable resizable column
+
+- [ ] BsTable filter panel
+
+- [ ] BsTable dynamic column visibility
+
+- [ ] BsTable add info (like showing x to y of n entries)
+
+- [ ] Add BsCarousel
+
+- [ ] Add input in BsAlert 
 
 ### License
 <pre>
