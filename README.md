@@ -11,13 +11,13 @@ BsKit includes general components what you need like usable table, window, form 
 
 - [ ] BsTable first and last page button
 
-- [ ] BsTable inline editing
+- [x] BsTable inline editing
 
 - [ ] BsTable multiple select
 
-- [ ] BsTable update row
+- [ ] BsTable update row function
 
-- [ ] BsTable update column
+- [ ] BsTable update column function
 
 - [ ] BsTable resizable column
 

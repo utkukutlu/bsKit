@@ -59,6 +59,21 @@
 
     $(function () {
 
+        var types = [
+            {
+                text: "type 1",
+                value: "val1"
+            },
+            {
+                text: "type 2",
+                value: "val2"
+            },
+            {
+                text: "type 3",
+                value: "val3"
+            }
+        ];
+
         // var src = []; OR var src = {data: []};
         var src = {
             data: []
@@ -66,10 +81,11 @@
 
         for (var i = 0; i < 100; i++) {
             src.data.push({
-                userId: Math.floor(Math.random() * 100),
+                number: Math.floor(Math.random() * 100),
                 image: "https://github.githubassets.com/images/modules/site/home-illo-team.svg",
                 body: "Body " + i,
                 title: "Title " + i,
+                type: i,
                 id: i
             });
         }
@@ -77,33 +93,55 @@
         var table = $("table").bsTable({
             columns: [
                 {
+                    data: "edit",
+                    label: "#",
+                    width: "20px",
+                    render: function (data, index) {
+                        return "<input type='checkbox' value='" + index + "' />";
+                    }
+                },
+                {
                     data: "id",
-                    text: "Id",
+                    label: "Id",
                     width: "50px"
                 },
                 {
                     data: "image",
-                    text: "Image",
+                    label: "Image",
                     width: "10px",
                     align: "center",
                     sortable: false,
-                    render: function (data) {
+                    render: function (data, index) {
                         return "<img src='" + data + "' alt='" + data + "' style='width: 20px;' />";
                     }
                 },
                 {
-                    data: "userId",
-                    text: "User Id"
+                    data: "number",
+                    label: "Number",
+                    editable: true,
+                    dataType: "number"
                 },
                 {
                     data: "title",
-                    text: "Title",
-                    sortable: true
+                    label: "Title",
+                    dataType: "text",
+                    editable: true,
+                    sortable: true,
                 },
                 {
                     data: "body",
-                    text: "Body",
+                    label: "Body",
+                    dataType: "text",
+                    editable: true,
                     sortable: false
+                },
+                {
+                    data: "type",
+                    label: "Types",
+                    dataType: "comboBox",
+                    editable: true,
+                    sortable: false,
+                    dataSet: types
                 },
             ],
             src: src,
@@ -124,7 +162,7 @@
                     action: function () {
                         var rows = table.getRows();
                         console.dir(rows);
-                        alert("look console");
+                        alert("open console");
                     }
                 },
                 {
@@ -132,7 +170,7 @@
                     action: function () {
                         var row = table.getSelectedRow();
                         console.dir(row);
-                        alert("look console");
+                        alert("open console");
                     }
                 },
                 {
@@ -140,7 +178,7 @@
                     action: function () {
                         var row = table.getRow(0);
                         console.dir(row);
-                        alert("look console");
+                        alert("open console");
                     }
                 },
                 {
@@ -148,15 +186,16 @@
                     action: function () {
                         var size = table.getDataLength();
                         console.dir(size);
-                        alert("look console");
+                        alert("open console");
                     }
                 },
                 {
                     text: "Add New Row and Refresh Data",
                     action: function () {
                         src.data.push({
-                            userId: Math.floor(Math.random() * 100),
+                            number: Math.floor(Math.random() * 100),
                             id: src.data.length + 1,
+                            type: i,
                             title: "Title " + (src.data.length + 1),
                             body: "Body " + (src.data.length + 1),
                             image: "https://github.githubassets.com/images/modules/site/home-illo-team.svg"
@@ -169,6 +208,16 @@
             selectedRowBgColor: "#F7802F",
             selectedRowTextColor: "#FFFFFF",
             events: {
+                "columnClicked": function (rowIndex, columnIndex) {
+                    if (columnIndex === 0) {
+                        var el = $("table tbody tr:eq(" + rowIndex + ") td:eq(0) input");
+                        if (el.prop('checked')) {
+                            el.prop('checked', false);
+                        } else {
+                            el.prop('checked', true);
+                        }
+                    }
+                },
                 "rowSelected": function (index) {
                     console.dir("row selected:" + index);
                 },
@@ -182,11 +231,8 @@
                 "completed": function () {
                     console.dir("table process complete");
                 },
-                "rowUpdated": function () {
-
-                },
-                "columnUpdated": function () {
-
+                "columnUpdated": function (rowIndex, colIndex, newValue) {
+                    console.dir("column updated,row:" + rowIndex + ";col:" + colIndex + ";newValue:" + newValue);
                 }
             }
 

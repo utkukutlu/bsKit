@@ -28,9 +28,10 @@
 
 .bs-table-container thead tr th {
     background-color: #ededed;
+    /*font-weight: normal;*/
     position: relative;
     cursor: pointer;
-    padding: 5px 20px;
+    padding: 8px 20px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     user-select: none;
     -webkit-transition: all 200ms;
@@ -38,6 +39,31 @@
     -ms-transition: all 200ms;
     -o-transition: all 200ms;
     transition: all 200ms;
+}
+
+.bs-table-edit-input:not([type="text"]):not([type="number"]) {
+    min-height: 30px;
+    float: left;
+}
+
+.bs-table-close-editing {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 30px;
+    background: rgba(0, 0, 0, 0);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    float: right;
+    cursor: pointer;
+    padding: 13.5px 6px;
+    line-height: 0px;
+    font-weight: bold;
+}
+
+.bs-table-close-editing:after {
+    content: '';
+    clear: both;
 }
 
 .bs-table-container thead tr th:not(:last-child) {
@@ -66,7 +92,7 @@
 
 .bs-table-container tbody tr td {
     cursor: pointer;
-    padding: 5px 20px;
+    padding: 6px 20px;
     -webkit-transition: background 500ms;
     -moz-transition: background 500ms;
     -ms-transition: background 500ms;
@@ -141,6 +167,11 @@
     position: absolute;
     right: 10px;
     top: 5px;
+}
+
+.bs-table-input-text {
+    /*width: 100%;*/
+    height: 100%;
 }
 
 .bs-alert-container {

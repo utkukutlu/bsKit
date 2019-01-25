@@ -99,7 +99,7 @@ $.fn.bsTable = function (params) {
         _this.columns.forEach(function (e) {
 
             tr.append($('<th/>', {
-                text: (typeof e.text !== "undefined" ? e.text : e.data),
+                text: (typeof e.label !== "undefined" ? e.label : e.data),
                 column: e.data,
                 style: (typeof e.width !== "undefined" ? ";width:" + e.width : "") + (e.sortable === false ? ";cursor:not-allowed" : ""),
                 align: e.align
@@ -301,32 +301,142 @@ $.fn.bsTable = function (params) {
     // });
 
     var rowClickTime = new Date().getTime();
-    _this.container.on("click", "tbody td", function () {
-        var index = $(this).parents("tr").index();
+    var rowClickIndex = 0;
+    _this.container.on("click", "tbody td", function (event) {
+
+        var td = $(this);
+
+        var rowIndex = td.parents("tr").index();
+        var columnIndex = td.index();
+
         var tr;
-        if ($(this)[0] == 'tr' && false) {
-            tr = $(this);
+        if (td[0] === 'tr' && false) {
+            tr = td;
         } else {
-            tr = $(this).parents("tr");
+            tr = td.parents("tr");
         }
         if (tr.hasClass("selected")) {
+            // if (!td.hasClass("bs-table-editing")) {
             tr.removeClass("selected");
             _this.container.find("tbody tr").removeClass("selected");
+            // }
         } else {
             _this.container.find("tbody tr").removeClass("selected");
-            tr.addClass("selected");
-            if (_this.events !== "" && typeof _this.events.rowSelected === "function") {
-                _this.events.rowSelected(index);
+            if (!td.hasClass("bs-table-editing") && event.target.nodeName === "TD") {
+                tr.addClass("selected");
             }
-        }
-        if ((new Date().getTime() - rowClickTime) < 700) {
-            if (_this.events !== "" && typeof _this.events.rowDoubleClick === "function") {
-                _this.events.rowDoubleClick(index);
+            if (_this.events !== "" && typeof _this.events.rowSelected === "function") {
+                _this.events.rowSelected(rowIndex);
             }
         }
 
+        if (event.target.nodeName === "TD" && (_this.events !== "" && typeof _this.events.columnClicked === "function")) {
+            _this.events.columnClicked(rowIndex, columnIndex);
+        }
+
+        if (!td.hasClass("bs-table-editing")) {
+            _this.container.find("tbody tr td.bs-table-editing").each(function (i, el) {
+                el = $(el);
+                editColumn(el);
+            });
+
+        }
+        if ((new Date().getTime() - rowClickTime) < 200) {
+            if (rowClickIndex === rowIndex) {
+
+                if (typeof _this.columns[columnIndex].editable !== "undefined" && _this.columns[columnIndex].editable === true && !td.hasClass("bs-table-editing")) {
+                    // tr.addClass("selected");
+                    td.addClass("bs-table-editing");
+                    td.attr("edit-type", _this.columns[columnIndex].dataType);
+
+                    td.width(td.width());
+
+                    if (typeof _this.columns[columnIndex].dataType !== "undefined" && _this.columns[columnIndex].dataType === "text") {
+
+                        td.html("<input class='bs-table-input-text bs-table-edit-input' type='text' value='" + td.html() + "' style='width:calc( " + td.width() + "px - 40px);height:" + td.height() + "px;' /><button class='bs-table-close-editing' style='height:" + td.height() + "px;' >x</button>");
+                    }
+                    if (typeof _this.columns[columnIndex].dataType !== "undefined" && _this.columns[columnIndex].dataType === "number") {
+
+                        td.html("<input class='bs-table-input-text bs-table-edit-input' type='number' value='" + td.html() + "' style='width:calc( " + td.width() + "px - 40px);height:" + td.height() + "px;' /><button class='bs-table-close-editing' style='height:" + td.height() + "px;' >x</button>");
+                    }
+
+                    if (typeof _this.columns[columnIndex].dataType !== "undefined" && _this.columns[columnIndex].dataType === "comboBox") {
+                        var select = $('<select/>', {
+                            class: "bs-table-edit-input",
+                            style: "width:calc(" + td.width() + "px - 40px);height:" + td.height() + "px;"
+                        });
+                        _this.columns[columnIndex].dataSet.forEach(function (value, index, array) {
+                            var option = $('<option/>', {
+                                value: value.value,
+                                text: value.text
+                            });
+                            select.append(option);
+                        });
+                        td.html(select);
+                        td.append("<button class='bs-table-close-editing' style='height:" + td.height() + "px;' >x</button>");
+                    }
+
+                }
+
+
+                if (_this.events !== "" && typeof _this.events.rowDoubleClick === "function") {
+                    _this.events.rowDoubleClick(rowIndex);
+                }
+            }
+
+        }
+
+        rowClickIndex = rowIndex;
         rowClickTime = new Date().getTime();
     });
+
+    _this.container.on("click", "tbody tr .bs-table-close-editing", function (event) {
+        var td = $(this).parents("td");
+        td.removeClass("bs-table-editing");
+        td.html(td.attr("data-value"));
+    });
+
+
+    function updatedColumn(rowIndex, colIndex, value) {
+        if (_this.events !== "" && typeof _this.events.columnUpdated === "function") {
+            _this.events.columnUpdated(rowIndex, colIndex, value);
+        }
+    }
+
+    $(document).click(function (e) {
+        if ((new Date().getTime() - rowClickTime) > 500) {
+            _this.container.find("tbody tr td.bs-table-editing").each(function (i, el) {
+                el = $(el);
+                editColumn(el);
+            });
+
+        }
+    });
+
+    function editColumn(el) {
+        var value = "";
+        el.css({
+            "background": _this.selectedRowBgColor,
+            "color": _this.selectedRowTextColor
+        });
+        if (el.attr("edit-type") === "text" || el.attr("edit-type") === "number") {
+            value = el.find("input").val();
+            el.html(el.find("input").val());
+        }
+        if (el.attr("edit-type") === "comboBox") {
+            value = el.find("select").val();
+            el.attr("data-value", el.find("select").val());
+            el.html(el.find("select option:selected").text());
+        }
+        el.removeClass("bs-table-editing");
+        setTimeout(function () {
+            el.css({
+                "background": "",
+                "color": ""
+            });
+        }, 200);
+        updatedColumn(el.parents("tr").index(), el.index(), value);
+    }
 
     _this.container.find("thead tr th").click(function () {
         var col = $(this).attr("column");
@@ -565,7 +675,7 @@ $.fn.bsTable = function (params) {
             for (let k = 0; k < _this.columns.length; k++) {
                 var r = "";
                 if (typeof _this.columns[k].render === "function") {
-                    r = _this.columns[k].render(data.data[i][_this.columns[k].data])
+                    r = _this.columns[k].render(data.data[i][_this.columns[k].data], i)
                 }
 
                 let td = $('<td/>', {
@@ -610,12 +720,6 @@ $.fn.bsTable = function (params) {
             _this.events.columnUpdated();
         }
 
-    };
-
-    this.updateRow = function (index) {
-        if (_this.events !== "" && typeof _this.events.rowUpdated === "function") {
-            _this.events.rowUpdated();
-        }
     };
 
     this.refresh = function () {
